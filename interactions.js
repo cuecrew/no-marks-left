@@ -1,76 +1,47 @@
 // ─── No Marks Left — Frontend Interactions ───────────────────────────────────
-// Effect 1: Background colour wash on product hover
-// Effect 2: Chocolate snap sound + shatter particles + badge bounce on add-to-cart
+// Chocolate snap sound + shatter particles + badge bounce on add-to-cart
 
 document.addEventListener('DOMContentLoaded', function() {
 
-// ── Wash overlay ──────────────────────────────────────────────────────────────
-var wash = document.createElement('div');
-wash.id = 'nml-wash';
-wash.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:0;transition:background 0.75s ease;background:transparent;';
-document.body.appendChild(wash);
-
-var WASH = {
-  pi1: 'rgba(139,26,26,0.18)',
-  pi2: 'rgba(110,32,112,0.18)',
-  pi3: 'rgba(24,24,60,0.2)',
-  pi4: 'rgba(130,70,8,0.18)',
-  pi5: 'rgba(28,84,30,0.18)',
-  pi6: 'rgba(50,50,70,0.18)'
-};
-
-function getPiClass(el) {
-  if (!el) return null;
-  return Array.from(el.classList).find(function(c){ return /^pi\d$/.test(c); });
-}
-
-function setWash(cls) { wash.style.background = WASH[cls] || 'transparent'; }
-function clearWash() { wash.style.background = 'transparent'; }
-
-// Home / cart: wash on card hover
-document.addEventListener('mouseover', function(e) {
-  var card = e.target.closest('.pcard, .hcard, .mini-card');
-  if (!card) return;
-  var piEl = card.querySelector('[class*="pi1"],[class*="pi2"],[class*="pi3"],[class*="pi4"],[class*="pi5"],[class*="pi6"]');
-  var cls = getPiClass(piEl) || getPiClass(card);
-  if (cls) setWash(cls);
-});
-document.addEventListener('mouseout', function(e) {
-  if (e.target.closest('.pcard, .hcard, .mini-card')) clearWash();
-});
-
-// Product page: persistent wash from current product's colour
-var bm = document.querySelector('.prod-bm');
-if (bm) {
-  var cls = getPiClass(bm);
-  if (cls) {
-    wash.style.transition = 'background 1.4s ease';
-    setWash(cls);
-  }
-}
-
-
-// ── Chocolate snap sound (Web Audio, no external files) ───────────────────────
+// ── Chocolate snap sound (two-layer: mid crack + low body) ────────────────────
 function playSnap() {
   try {
     var ctx = new (window.AudioContext || window.webkitAudioContext)();
-    var len = Math.floor(ctx.sampleRate * 0.07);
-    var buf = ctx.createBuffer(1, len, ctx.sampleRate);
-    var data = buf.getChannelData(0);
-    for (var i = 0; i < len; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.4);
+
+    // Layer 1: mid-range crack — the actual snap character
+    var len1 = Math.floor(ctx.sampleRate * 0.13);
+    var buf1 = ctx.createBuffer(1, len1, ctx.sampleRate);
+    var d1 = buf1.getChannelData(0);
+    for (var i = 0; i < len1; i++) {
+      d1[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len1, 1.6);
     }
-    var src = ctx.createBufferSource();
-    src.buffer = buf;
-    var hi = ctx.createBiquadFilter();
-    hi.type = 'highpass'; hi.frequency.value = 1400;
-    var peak = ctx.createBiquadFilter();
-    peak.type = 'peaking'; peak.frequency.value = 3000; peak.gain.value = 8;
-    var gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.6, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-    src.connect(hi); hi.connect(peak); peak.connect(gain); gain.connect(ctx.destination);
-    src.start();
+    var src1 = ctx.createBufferSource();
+    src1.buffer = buf1;
+    var bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass'; bp.frequency.value = 950; bp.Q.value = 1.0;
+    var g1 = ctx.createGain();
+    g1.gain.setValueAtTime(0.42, ctx.currentTime);
+    g1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.14);
+    src1.connect(bp); bp.connect(g1); g1.connect(ctx.destination);
+    src1.start();
+
+    // Layer 2: low thump — gives it weight and richness
+    var len2 = Math.floor(ctx.sampleRate * 0.07);
+    var buf2 = ctx.createBuffer(1, len2, ctx.sampleRate);
+    var d2 = buf2.getChannelData(0);
+    for (var j = 0; j < len2; j++) {
+      d2[j] = (Math.random() * 2 - 1) * Math.pow(1 - j / len2, 2.8);
+    }
+    var src2 = ctx.createBufferSource();
+    src2.buffer = buf2;
+    var lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 280;
+    var g2 = ctx.createGain();
+    g2.gain.setValueAtTime(0.28, ctx.currentTime);
+    g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
+    src2.connect(lp); lp.connect(g2); g2.connect(ctx.destination);
+    src2.start();
+
   } catch(e) {}
 }
 
