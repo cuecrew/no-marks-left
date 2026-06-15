@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Our Story — No Marks Left</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <script src="analytics.js?v=2"></script>
+  <script src="interactions.js?v=1"></script>
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a0e06;--cream:#f5ecd5;--paper:#fdf8ef;--deep:#2a1508;
+  --red:#8b1a1a;--gold:#c8913a;--pop:#d94f2b;--border:rgba(26,14,6,.1);--w:720px;
+}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.5}
+
+header{position:sticky;top:0;z-index:200;background:var(--paper);border-bottom:1px solid var(--border)}
+.h-inner{max-width:1160px;margin:0 auto;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.logo{font-family:'Playfair Display',serif;font-size:21px;font-weight:900;color:var(--ink);text-decoration:none;letter-spacing:-.5px}
+.logo em{color:var(--red);font-style:italic}
+nav{display:flex;gap:28px}
+nav a{font-size:13px;font-weight:500;color:var(--ink);text-decoration:none;opacity:.5;transition:opacity .15s}
+nav a:hover,nav a.active{opacity:1}
+.cart-btn{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);background:var(--cream);border:1px solid var(--border);padding:8px 16px;border-radius:100px}
+.cart-count{background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+
+/* hero */
+.about-hero{background:var(--ink);padding:100px 28px 92px;text-align:center;position:relative;overflow:hidden}
+.about-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,rgba(200,145,58,.15) 0%,transparent 68%);pointer-events:none}
+.ah-eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--gold);margin-bottom:20px}
+.ah-title{font-family:'Playfair Display',serif;font-size:clamp(56px,8vw,104px);font-weight:900;color:#fff;line-height:.92;margin-bottom:26px;letter-spacing:-3px}
+.ah-title em{color:var(--gold);font-style:italic;display:block}
+.ah-sub{font-size:17px;color:rgba(255,255,255,.48);max-width:460px;margin:0 auto;line-height:1.8}
+
+/* story */
+.story{padding:88px 28px}
+.story-inner{max-width:var(--w);margin:0 auto}
+.s-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--red);margin-bottom:14px}
+.s-h2{font-family:'Playfair Display',serif;font-size:clamp(26px,3.8vw,42px);font-weight:900;line-height:1.1;margin-bottom:28px}
+.s-h2 em{font-style:italic;color:var(--red)}
+.s-p{font-size:16px;line-height:1.88;color:rgba(26,14,6,.68);margin-bottom:22px}
+.s-p strong{color:var(--ink);font-weight:600}
+
+/* ritual */
+.ritual{background:var(--cream);border:1px solid var(--border);border-radius:16px;padding:44px 40px 36px;margin:48px 0;text-align:center;position:relative;overflow:hidden}
+.ritual::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(200,145,58,.1) 0%,transparent 60%);pointer-events:none}
+.ritual-steps{display:flex;align-items:flex-start;justify-content:center;margin-bottom:24px;gap:0}
+.ritual-step{text-align:center;padding:0 36px;position:relative;flex:1;max-width:180px}
+.ritual-step+.ritual-step::before{content:'→';position:absolute;left:-10px;top:20px;font-size:18px;color:rgba(26,14,6,.2);font-weight:400}
+.rs-em{font-size:38px;display:block;margin-bottom:10px}
+.rs-label{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.rs-sub{font-size:11px;color:rgba(26,14,6,.38);line-height:1.5}
+.ritual-caption{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:rgba(26,14,6,.42)}
+
+/* why grid */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:40px 0}
+.why-card{background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:24px 20px}
+.why-card.strike .why-title{text-decoration:line-through;text-decoration-color:var(--red);opacity:.6}
+.why-card.strike .why-icon{opacity:.45}
+.why-icon{font-size:26px;margin-bottom:10px}
+.why-title{font-size:14px;font-weight:700;margin-bottom:6px}
+.why-desc{font-size:13px;color:rgba(26,14,6,.5);line-height:1.65}
+.why-card.win{background:var(--ink)}
+.why-card.win .why-title{color:#fff}
+.why-card.win .why-desc{color:rgba(255,255,255,.5)}
+
+/* divider */
+.divider{max-width:var(--w);margin:0 auto 0;border:none;border-top:1px solid var(--border)}
+
+/* craft */
+.craft{background:var(--deep);color:#fff;padding:88px 28px}
+.craft-inner{max-width:var(--w);margin:0 auto}
+.craft-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--gold);margin-bottom:14px}
+.craft-h2{font-family:'Playfair Display',serif;font-size:clamp(26px,3.8vw,42px);font-weight:900;line-height:1.1;margin-bottom:16px;color:#fff}
+.craft-h2 em{font-style:italic;color:var(--gold)}
+.craft-intro{font-size:16px;color:rgba(255,255,255,.45);line-height:1.85;max-width:540px;margin-bottom:44px}
+.trust-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.trust-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:26px 22px}
+.trust-icon{font-size:28px;margin-bottom:12px}
+.trust-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:7px}
+.trust-desc{font-size:13px;color:rgba(255,255,255,.42);line-height:1.7}
+
+.fssai-strip{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px 24px;margin-top:20px;display:flex;align-items:center;gap:18px}
+.fssai-badge{background:var(--gold);color:var(--ink);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:7px 13px;border-radius:6px;white-space:nowrap;flex-shrink:0}
+.fssai-text{font-size:13px;color:rgba(255,255,255,.38);line-height:1.65}
+.fssai-text strong{color:rgba(255,255,255,.72)}
+
+/* cta */
+.about-cta{background:var(--cream);padding:100px 28px;text-align:center}
+.cta-inner{max-width:520px;margin:0 auto}
+.cta-h2{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,58px);font-weight:900;line-height:1.0;margin-bottom:18px}
+.cta-h2 em{font-style:italic;color:var(--red)}
+.cta-sub{font-size:16px;color:rgba(26,14,6,.48);margin-bottom:38px;line-height:1.75}
+.btn-pop{background:var(--pop);color:#fff;border:none;padding:15px 32px;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:transform .15s,box-shadow .15s;display:inline-block}
+.btn-pop:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(217,79,43,.38)}
+
+footer{background:var(--ink);color:rgba(255,255,255,.4)}
+.f-inner{max-width:1160px;margin:0 auto;padding:40px 28px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.f-logo{font-family:'Playfair Display',serif;font-size:19px;font-weight:900;color:#fff}
+.f-logo em{color:var(--gold);font-style:italic}
+.f-links{display:flex;gap:20px}
+.f-links a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+.f-links a:hover{color:#fff}
+.f-copy{font-size:12px}
+
+@media(max-width:640px){
+  nav{display:none}
+  .why-grid{grid-template-columns:1fr}
+  .trust-grid{grid-template-columns:1fr}
+  .ritual-steps{flex-direction:column;align-items:center;gap:24px}
+  .ritual-step{max-width:none}
+  .ritual-step+.ritual-step::before{display:none}
+  .fssai-strip{flex-direction:column;align-items:flex-start}
+  .f-inner{flex-direction:column;text-align:center}
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="h-inner">
+    <a href="index.html" class="logo">No <em>Marks</em> Left</a>
+    <nav>
+      <a href="index.html#products">Shop</a>
+      <a href="about.html" class="active">Our Story</a>
+      <a href="index.html#reviews">Reviews</a>
+    </nav>
+    <a href="cart.html" class="cart-btn">🛒 Cart <span class="cart-count" id="cart-count">0</span></a>
+  </div>
+</header>
+
+<section class="about-hero">
+  <p class="ah-eyebrow">why we exist</p>
+  <h1 class="ah-title">a novel<br/><em>idea.</em></h1>
+  <p class="ah-sub">Handcrafted chocolate bookmarks for the kind of reader who stays up past midnight for characters who don't exist.</p>
+</section>
+
+<section class="story">
+  <div class="story-inner">
+    <div class="s-label">the origin</div>
+    <h2 class="s-h2">we asked: <em>what if your<br/>bookmark was a reward?</em></h2>
+    <p class="s-p">It started with a simple observation: <strong>finishing a book is a big deal.</strong> You lived in that world for days, sometimes weeks. You stayed up past midnight for characters who aren't real. You had genuine feelings about things that never happened.</p>
+    <p class="s-p">And then it ends. You close the book. And there's nothing to mark the moment — just an empty mug and that particular emptiness that only book-endings bring.</p>
+    <p class="s-p">We wanted to change that. So we made a bookmark you can eat when you're done.</p>
+
+    <div class="ritual">
+      <div class="ritual-steps">
+        <div class="ritual-step">
+          <span class="rs-em">📖</span>
+          <div class="rs-label">Start your book</div>
+          <div class="rs-sub">tuck in your<br/>bookmark on page 1</div>
+        </div>
+        <div class="ritual-step">
+          <span class="rs-em">🔖</span>
+          <div class="rs-label">Read. Cry. Reread.</div>
+          <div class="rs-sub">holds your place · leaves<br/>no marks on your pages</div>
+        </div>
+        <div class="ritual-step">
+          <span class="rs-em">🍫</span>
+          <div class="rs-label">Eat it when you finish</div>
+          <div class="rs-sub">you've earned<br/>every bite</div>
+        </div>
+      </div>
+      <p class="ritual-caption">"The bookmark that travels with you — and rewards you for finishing."</p>
+    </div>
+
+    <p class="s-p"><strong>No Marks Left</strong> means two things. No dog-ears, no sticky residue, no grease stains — your pages stay exactly as you'd want them. And no marks left in your reading life either: every book finished, every chapter earned, every story properly closed.</p>
+    <p class="s-p">Your bookmark shouldn't just hold a page. It should hold the moment.</p>
+  </div>
+</section>
+
+<section class="story" style="padding-top:0;padding-bottom:88px">
+  <div class="story-inner">
+    <div class="s-label">why not just use</div>
+    <h2 class="s-h2">we tried everything else <em>first.</em></h2>
+
+    <div class="why-grid">
+      <div class="why-card strike">
+        <div class="why-icon">📄</div>
+        <div class="why-title">Dog-eared pages</div>
+        <div class="why-desc">Technically works. Also a war crime. Your book has feelings and you should respect them.</div>
+      </div>
+      <div class="why-card strike">
+        <div class="why-icon">🔖</div>
+        <div class="why-title">Regular bookmarks</div>
+        <div class="why-desc">Fall out. Get lost. Have no personality. Cannot be eaten. What's even the point.</div>
+      </div>
+      <div class="why-card strike">
+        <div class="why-icon">📱</div>
+        <div class="why-title">The Kindle's built-in thing</div>
+        <div class="why-desc">We respect this. But you're here, so we both know how you feel about screens and physical books.</div>
+      </div>
+      <div class="why-card win">
+        <div class="why-icon">🍫</div>
+        <div class="why-title">An edible chocolate bookmark</div>
+        <div class="why-desc">Holds your page. Leaves no oil, no residue, no marks on your pages — ever. Eaten as your finishing ritual. A reward built into the reading experience. <em style="color:var(--gold)">A novel idea.</em></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="craft">
+  <div class="craft-inner">
+    <div class="craft-label">the craft</div>
+    <h2 class="craft-h2">made with obsessive<br/><em>attention.</em></h2>
+    <p class="craft-intro">We're a small team of readers who also care deeply about chocolate. Every batch is made fresh per order, in a clean food-grade kitchen, using ingredients we'd give to people we actually like.</p>
+
+    <div class="trust-grid">
+      <div class="trust-card">
+        <div class="trust-icon">🍫</div>
+        <div class="trust-title">Real couverture chocolate</div>
+        <div class="trust-desc">Not compound. Not "chocolate-flavoured". Actual couverture — 70% single-origin dark, ethically-sourced milk, and Belgian white. You'll taste the difference.</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon">🎨</div>
+        <div class="trust-title">Food-safe edible ink</div>
+        <div class="trust-desc">Designs are printed with food-grade edible ink on edible wafer paper — the same technology professional patisseries use. Every detail is safe to eat.</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon">📦</div>
+        <div class="trust-title">Made fresh per order</div>
+        <div class="trust-desc">No sitting in warehouses. Every order is made after you place it — ships in 3–5 days in temperature-controlled packaging so it reaches you perfect.</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon">🌿</div>
+        <div class="trust-title">No artificial preservatives</div>
+        <div class="trust-desc">We don't add shelf-extenders. Our bookmarks have a natural 30-day shelf life. We figure you'll finish the book well before that.</div>
+      </div>
+      <div class="trust-card" style="grid-column:1/-1">
+        <div class="trust-icon">📄</div>
+        <div class="trust-title">Zero marks on your pages. Guaranteed.</div>
+        <div class="trust-desc">Our bookmarks are finished with a sealed food-grade coating that prevents any oil or cocoa butter transfer onto paper. Sit it between your pages for 30 days — they'll come out clean. Your book is safe. That's a promise, and also the whole point of our name.</div>
+      </div>
+    </div>
+
+    <div class="fssai-strip">
+      <div class="fssai-badge">FSSAI Certified</div>
+      <div class="fssai-text"><strong>Licensed under FSSAI (Food Safety and Standards Authority of India).</strong> Our kitchen and manufacturing processes meet all food safety standards for production and packaging of food products in India. Licence No. will be printed on all packaging.</div>
+    </div>
+  </div>
+</section>
+
+<section class="about-cta">
+  <div class="cta-inner">
+    <h2 class="cta-h2">your next book<br/>deserves a <em>ritual.</em></h2>
+    <p class="cta-sub">Pick your bookmark. Read the whole book. Eat it when you turn the last page. That's the whole deal — and it's a pretty good one.</p>
+    <a href="index.html#products" class="btn-pop">Shop the collection →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="f-inner">
+    <div class="f-logo">No <em>Marks</em> Left</div>
+    <div class="f-links">
+      <a href="index.html#products">Shop</a>
+      <a href="about.html">Our Story</a>
+      <a href="cart.html">Cart</a>
+      <a href="mailto:hello@nomarksleft.com">hello@nomarksleft.com</a>
+    </div>
+    <div class="f-copy">© 2025 No Marks Left · Made in India</div>
+  </div>
+</footer>
+
+<script>
+function getCart(){try{return JSON.parse(localStorage.getItem('nml_cart')||'[]')}catch{return[]}}
+function updateBadge(){const n=getCart().reduce((a,i)=>a+i.qty,0);document.querySelectorAll('.cart-count').forEach(el=>el.textContent=n)}
+updateBadge();
+</script>
+</body>
+</html>

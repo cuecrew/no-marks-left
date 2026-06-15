@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>No Marks Left — Edible Bookmarks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <script src="analytics.js?v=2"></script>
+  <script src="interactions.js?v=1"></script>
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a0e06;--cream:#f5ecd5;--paper:#fdf8ef;--deep:#2a1508;
+  --red:#8b1a1a;--gold:#c8913a;--pop:#d94f2b;--sage:#3d5c32;
+  --border:rgba(26,14,6,.1);--w:1160px;
+}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.5}
+
+/* ── ticker ── */
+.ticker-wrap{background:var(--ink);overflow:hidden;height:34px;display:flex;align-items:center}
+.ticker{display:flex;white-space:nowrap;animation:tick 36s linear infinite}
+.ticker-seg{display:inline-flex}
+.ti{color:rgba(255,255,255,.75);font-size:11px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;padding:0 24px}
+.ti b{color:var(--gold)}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── header ── */
+header{position:sticky;top:0;z-index:200;background:var(--paper);border-bottom:1px solid var(--border)}
+.h-inner{max-width:var(--w);margin:0 auto;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.logo{font-family:'Playfair Display',serif;font-size:21px;font-weight:900;color:var(--ink);text-decoration:none;letter-spacing:-.5px}
+.logo em{color:var(--red);font-style:italic}
+nav{display:flex;gap:28px}
+nav a{font-size:13px;font-weight:500;color:var(--ink);text-decoration:none;opacity:.5;transition:opacity .15s}
+nav a:hover{opacity:1}
+.cart-btn{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);background:var(--cream);border:1px solid var(--border);padding:8px 16px;border-radius:100px;transition:all .2s}
+.cart-btn:hover{background:var(--ink);color:#fff}
+.cart-count{background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+
+/* ── hero ── */
+.hero{background:var(--ink);display:grid;grid-template-columns:1fr 1fr;min-height:88vh;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 72% 45%,rgba(139,26,26,.45) 0%,transparent 65%);pointer-events:none}
+.hero-text{padding:88px 0 88px 80px;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center}
+.eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--gold);margin-bottom:20px}
+.hero-text h1{font-family:'Playfair Display',serif;font-size:clamp(52px,5.8vw,86px);font-weight:900;color:#fff;line-height:1.0;margin-bottom:22px}
+.hero-text h1 em{color:var(--gold);font-style:italic;display:block}
+.hero-sub{font-size:16px;color:rgba(255,255,255,.58);line-height:1.75;max-width:370px;margin-bottom:36px}
+.hero-ctas{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn-pop{background:var(--pop);color:#fff;border:none;padding:13px 26px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:transform .15s,box-shadow .15s;display:inline-block}
+.btn-pop:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(217,79,43,.4)}
+.btn-ghost{color:rgba(255,255,255,.65);font-size:14px;font-weight:500;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.25);padding-bottom:2px;transition:color .2s,border-color .2s}
+.btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,.7)}
+
+/* hero product cards */
+.hero-cards{padding:60px 60px 60px 0;position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:center}
+.hcard{border-radius:14px;padding:18px 14px 14px;display:flex;flex-direction:column;justify-content:flex-end;height:190px;text-decoration:none;position:relative;overflow:hidden;transition:transform .2s}
+.hcard:hover{transform:scale(1.025)}
+.hcard-em{font-size:46px;position:absolute;top:50%;left:50%;transform:translate(-50%,-65%)}
+.hcard.shift{margin-top:28px}
+.hcard-name{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:#fff;line-height:1.25;margin-bottom:2px}
+.hcard-price{font-size:11px;color:rgba(255,255,255,.55)}
+.hc1{background:linear-gradient(150deg,#3a1010 0%,#7d2222 100%)}
+.hc2{background:linear-gradient(150deg,#260e2a 0%,#6e2a78 100%)}
+.hc3{background:linear-gradient(150deg,#0e1c0e 0%,#2d5228 100%)}
+.hc4{background:linear-gradient(150deg,#2a160a 0%,#7a4018 100%)}
+
+/* ── trust strip ── */
+.trust-strip{background:var(--cream);border-bottom:1px solid var(--border)}
+.trust-inner{max-width:var(--w);margin:0 auto;padding:14px 28px;display:flex;gap:36px;align-items:center;justify-content:center;flex-wrap:wrap}
+.trust-item{font-size:13px;font-weight:500;color:rgba(26,14,6,.5);display:flex;align-items:center;gap:6px}
+.trust-item strong{color:var(--ink)}
+
+/* ── sections ── */
+.section{padding:72px 28px}
+.s-inner{max-width:var(--w);margin:0 auto}
+.s-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--red);margin-bottom:10px}
+.s-title{font-family:'Playfair Display',serif;font-size:clamp(30px,4vw,52px);font-weight:900;line-height:1.1;margin-bottom:44px}
+
+/* ── product grid ── */
+.products{background:var(--paper)}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pcard{text-decoration:none;color:inherit;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .25s}
+.pcard:hover{transform:translateY(-5px);box-shadow:0 14px 44px rgba(26,14,6,.11)}
+.pcard-img{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;position:relative;background:var(--cream);border-bottom:1px solid var(--border);overflow:hidden}
+.pcard-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 28% 72%,rgba(200,145,58,.08) 0%,transparent 55%),radial-gradient(circle at 72% 22%,rgba(139,26,26,.05) 0%,transparent 50%)}
+.pcard-badge{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:3px 8px;border-radius:100px;z-index:3}
+.bm-wrap{width:52%;filter:drop-shadow(0 6px 20px rgba(0,0,0,.32));position:relative;z-index:2}
+.bm{clip-path:polygon(0 0,100% 0,100% 87%,50% 100%,0 87%);aspect-ratio:1/2.5;display:flex;flex-direction:column;align-items:center;padding-top:17%;position:relative;overflow:hidden}
+.bm::after{content:'';position:absolute;top:0;left:0;right:52%;bottom:36%;background:linear-gradient(130deg,rgba(255,255,255,.22) 0%,transparent 65%);z-index:1;pointer-events:none}
+.bm-photo{display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;border-radius:0}
+.bm.has-photo .bm-photo{display:block}
+.bm.has-photo .bm-em,.bm.has-photo .bm-nm{display:none}
+.bm.has-photo::after{display:none}
+.bm-em{font-size:clamp(24px,3vw,40px);position:relative;z-index:2}
+.bm-nm{font-family:'Playfair Display',serif;font-size:clamp(7px,1vw,10px);font-weight:700;color:rgba(255,255,255,.85);text-align:center;line-height:1.3;margin-top:5px;position:relative;z-index:2;padding:0 8%}
+.pi1{background:linear-gradient(150deg,#1a0808,#6b1a1a)}
+.pi2{background:linear-gradient(150deg,#1e0c26,#6e2070)}
+.pi3{background:linear-gradient(150deg,#0a0a14,#1e1e38)}
+.pi4{background:linear-gradient(150deg,#1a0c04,#6b3a08)}
+.pi5{background:linear-gradient(150deg,#0a140a,#1e4020)}
+.pi6{background:linear-gradient(150deg,#141418,#2c2c3c)}
+.pcard-body{padding:12px 14px 14px;flex:1;display:flex;flex-direction:column}
+.pcard-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--red);margin-bottom:4px}
+.pcard-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;line-height:1.2;margin-bottom:4px}
+.pcard-flavor{font-size:11px;color:rgba(26,14,6,.42);margin-bottom:10px;flex:1;font-style:italic}
+.pcard-row{display:flex;align-items:center;justify-content:space-between}
+.pcard-price{font-size:15px;font-weight:700}
+.pcard-atc{background:var(--ink);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s}
+.pcard-atc:hover{background:var(--red)}
+
+/* ── vibes ── */
+.vibes{padding:0}
+.vgrid{display:grid;grid-template-columns:repeat(3,1fr)}
+.vcard{padding:52px 40px;border-right:1px solid var(--border);border-top:1px solid var(--border);background:var(--paper)}
+.vcard:last-child{border-right:none}
+.vcard.dark{background:var(--ink);color:#fff;border-color:transparent}
+.vcard-icon{font-size:36px;margin-bottom:20px;display:block}
+.vcard-q{font-family:'Playfair Display',serif;font-style:italic;font-size:19px;font-weight:700;line-height:1.35;margin-bottom:12px}
+.vcard.dark .vcard-q{color:var(--gold)}
+.vcard-a{font-size:13px;line-height:1.75;opacity:.58}
+.vcard.dark .vcard-a{opacity:.52}
+.vcard-link{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;text-decoration:none;margin-top:18px;border-bottom:1px solid currentColor;padding-bottom:1px}
+.vcard.dark .vcard-link{color:var(--gold)}
+
+/* ── reviews ── */
+.reviews{background:var(--deep);color:#fff}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.rcard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:22px 20px}
+.rcard-stars{color:var(--gold);font-size:13px;letter-spacing:2px;margin-bottom:10px}
+.rcard-text{font-size:14px;color:rgba(255,255,255,.72);line-height:1.75;margin-bottom:14px;font-style:italic}
+.rcard-handle{font-size:11px;color:rgba(255,255,255,.3);font-weight:600;letter-spacing:.3px}
+
+/* ── email ── */
+.email-sec{background:var(--cream);text-align:center}
+.email-title{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);font-weight:900;margin-bottom:10px}
+.email-title em{font-style:italic;color:var(--red)}
+.email-sub{font-size:15px;color:rgba(26,14,6,.5);margin-bottom:32px}
+.email-form{display:flex;gap:8px;max-width:420px;margin:0 auto}
+.email-input{flex:1;border:1.5px solid var(--border);border-radius:6px;padding:13px 16px;font-size:14px;font-family:inherit;outline:none;background:#fff;transition:border-color .2s}
+.email-input:focus{border-color:var(--ink)}
+.email-btn{background:var(--ink);color:#fff;border:none;padding:13px 22px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .2s}
+.email-btn:hover{background:var(--red)}
+.email-ok{display:none;font-size:14px;font-weight:600;color:var(--red);margin-top:14px}
+
+/* ── footer ── */
+footer{background:var(--ink);color:rgba(255,255,255,.4)}
+.f-inner{max-width:var(--w);margin:0 auto;padding:40px 28px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.f-logo{font-family:'Playfair Display',serif;font-size:19px;font-weight:900;color:#fff}
+.f-logo em{color:var(--gold);font-style:italic}
+.f-links{display:flex;gap:20px}
+.f-links a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+.f-links a:hover{color:#fff}
+.f-copy{font-size:12px}
+
+/* ── responsive ── */
+@media(max-width:960px){
+  .hero{grid-template-columns:1fr}
+  .hero-text{padding:64px 28px 32px}
+  .hero-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 28px 56px}
+  .hcard{min-height:140px}.hcard.shift{margin-top:16px}
+  .pgrid{grid-template-columns:repeat(2,1fr)}
+  .vgrid,.rgrid{grid-template-columns:1fr}
+  .vcard{border-right:none}.vcard:last-child{border-top:none}
+}
+@media(max-width:600px){
+  nav{display:none}
+  .trust-inner{gap:16px;justify-content:flex-start}
+  .email-form{flex-direction:column}
+  .f-inner{flex-direction:column;text-align:center}
+}
+  </style>
+</head>
+<body>
+
+<!-- ticker -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker">
+    <div class="ticker-seg">
+      <span class="ti">🍫 <b>FREE SHIPPING</b> OVER ₹499</span><span class="ti">✦</span>
+      <span class="ti">📚 AS SEEN ON <b>BOOKTOK</b></span><span class="ti">✦</span>
+      <span class="ti">🇮🇳 MADE FRESH IN INDIA</span><span class="ti">✦</span>
+      <span class="ti">📦 SHIPS IN <b>3–5 DAYS</b></span><span class="ti">✦</span>
+      <span class="ti">💌 READ · SAVOUR · REPEAT</span><span class="ti">✦</span>
+    </div>
+    <div class="ticker-seg" aria-hidden="true">
+      <span class="ti">🍫 <b>FREE SHIPPING</b> OVER ₹499</span><span class="ti">✦</span>
+      <span class="ti">📚 AS SEEN ON <b>BOOKTOK</b></span><span class="ti">✦</span>
+      <span class="ti">🇮🇳 MADE FRESH IN INDIA</span><span class="ti">✦</span>
+      <span class="ti">📦 SHIPS IN <b>3–5 DAYS</b></span><span class="ti">✦</span>
+      <span class="ti">💌 READ · SAVOUR · REPEAT</span><span class="ti">✦</span>
+    </div>
+  </div>
+</div>
+
+<!-- header -->
+<header>
+  <div class="h-inner">
+    <a href="index.html" class="logo">No <em>Marks</em> Left</a>
+    <nav>
+      <a href="#products">Shop</a>
+      <a href="about.html">Our Story</a>
+      <a href="#reviews">Reviews</a>
+    </nav>
+    <a href="cart.html" class="cart-btn">🛒 Cart <span class="cart-count" id="cart-count">0</span></a>
+  </div>
+</header>
+
+<!-- hero -->
+<section class="hero">
+  <div class="hero-text">
+    <p class="eyebrow">bookmarks. but make it edible.</p>
+    <h1>eat your
+      <em>bookmark.</em>
+    </h1>
+    <p class="hero-sub">Handcrafted chocolate bookmarks for the feral reader who finishes books at 3am and has opinions about fictional characters.</p>
+    <div class="hero-ctas">
+      <a href="#products" class="btn-pop">Shop the collection</a>
+      <a href="about.html" class="btn-ghost">our story →</a>
+    </div>
+  </div>
+  <div class="hero-cards">
+    <a href="product.html?id=1" class="hcard hc1"><div class="hcard-em">🏛️</div><div><div class="hcard-name">my roman<br/>empire</div><div class="hcard-price">₹299</div></div></a>
+    <a href="product.html?id=4" class="hcard hc3 shift"><div class="hcard-em">🕯️</div><div><div class="hcard-name">one more<br/>chapter</div><div class="hcard-price">₹279</div></div></a>
+    <a href="product.html?id=6" class="hcard hc2"><div class="hcard-em">🌑</div><div><div class="hcard-name">they had<br/>valid points</div><div class="hcard-price">₹329</div></div></a>
+    <a href="product.html?id=2" class="hcard hc4 shift"><div class="hcard-em">🌹</div><div><div class="hcard-name">down bad for<br/>a fictional man</div><div class="hcard-price">₹329</div></div></a>
+  </div>
+</section>
+
+<!-- trust strip -->
+<div class="trust-strip">
+  <div class="trust-inner">
+    <div class="trust-item">⭐⭐⭐⭐⭐ <strong>4.9</strong> from 2,400+ readers</div>
+    <div class="trust-item">🍫 <strong>Food-safe</strong> edible ink</div>
+    <div class="trust-item">🇮🇳 <strong>Made</strong> fresh per order</div>
+    <div class="trust-item">📦 <strong>Ships</strong> in 3–5 days</div>
+    <div class="trust-item">🔒 <strong>Secure</strong> checkout</div>
+  </div>
+</div>
+
+<!-- products -->
+<section class="section products" id="products">
+  <div class="s-inner">
+    <div class="s-label">the collection</div>
+    <div class="s-title">pick your protagonist.</div>
+    <div class="pgrid" id="pgrid"></div>
+  </div>
+</section>
+
+<!-- vibes -->
+<section class="vibes" id="vibes">
+  <div class="vgrid">
+    <div class="vcard">
+      <span class="vcard-icon">🏛️</span>
+      <div class="vcard-q">"There's a book that's been living in my head for three years and I have made peace with this."</div>
+      <div class="vcard-a">Rich 70% dark chocolate. For the book that moved in and never left. Intense, complex, rent-free.</div>
+      <a href="product.html?id=1" class="vcard-link" style="color:var(--red)">Shop my roman empire →</a>
+    </div>
+    <div class="vcard dark">
+      <span class="vcard-icon">🌹</span>
+      <div class="vcard-q">"Fictional men have permanently ruined my standards and I'm not even sorry about it."</div>
+      <div class="vcard-a">Rose & strawberry white choc. Sweet, slightly irrational, completely correct. He's not real. He's better.</div>
+      <a href="product.html?id=2" class="vcard-link">Shop down bad →</a>
+    </div>
+    <div class="vcard">
+      <span class="vcard-icon">🕯️</span>
+      <div class="vcard-q">"It's fine. One more chapter and then I'll sleep. I mean it this time."</div>
+      <div class="vcard-a">Salted caramel milk choc. The most comforting lie in reader culture. Eat it at 2am. No regrets.</div>
+      <a href="product.html?id=4" class="vcard-link" style="color:var(--gold)">Shop one more chapter →</a>
+    </div>
+  </div>
+</section>
+
+<!-- reviews -->
+<section class="section reviews" id="reviews">
+  <div class="s-inner">
+    <div class="s-label" style="color:var(--gold)">what they're saying</div>
+    <div class="s-title" style="color:#fff;margin-bottom:28px">the internet approves.</div>
+    <div class="rgrid">
+      <div class="rcard">
+        <div class="rcard-stars">★★★★★</div>
+        <p class="rcard-text">"bought 'my roman empire' for the book that destroyed me in 2022. ate it while rereading. still not over it. this chocolate gets it."</p>
+        <div class="rcard-handle">@perma.brainworm · BookTok · 18K followers</div>
+      </div>
+      <div class="rcard">
+        <div class="rcard-stars">★★★★★</div>
+        <p class="rcard-text">"'down bad for a fictional man' was sent to me by four different friends in one week. bought it for all of them. we're all fine."</p>
+        <div class="rcard-handle">@romantasy.rotting · Instagram · 11.2K followers</div>
+      </div>
+      <div class="rcard">
+        <div class="rcard-stars">★★★★★</div>
+        <p class="rcard-text">"'the author is unwell (5 stars)' is the most accurate product name I have ever seen. ate it in 3 minutes. no further notes."</p>
+        <div class="rcard-handle">@booktok.certified.unhinged · BookTok · 7.4K followers</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- email -->
+<section class="section email-sec">
+  <div class="s-inner">
+    <div class="s-label">join the readership</div>
+    <div class="email-title">no spam.<br/>just <em>chaos.</em></div>
+    <div class="email-sub">Restock alerts, new flavour drops, the occasional unsolicited book rec.</div>
+    <form class="email-form" onsubmit="emailSignup(event)">
+      <input class="email-input" type="email" id="email-in" placeholder="you@example.com" required/>
+      <button class="email-btn" type="submit">I'm in →</button>
+    </form>
+    <div class="email-ok" id="email-ok">✓ you're in. talk soon.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-inner">
+    <div class="f-logo">No <em>Marks</em> Left</div>
+    <div class="f-links">
+      <a href="#products">Shop</a>
+      <a href="about.html">Our Story</a>
+      <a href="cart.html">Cart</a>
+      <a href="mailto:hello@nomarksleft.com">hello@nomarksleft.com</a>
+    </div>
+    <div class="f-copy">© 2025 No Marks Left · Made in India</div>
+  </div>
+</footer>
+
+<script>
+const PRODUCTS={
+  1:{name:'my roman empire',bmname:'my roman<br/>empire',flavor:'Dark Chocolate 70%',price:299,emoji:'🏛️',cls:'pi1',badge:'living rent free',desc:'For the book that moved into your head three years ago and never paid rent.'},
+  2:{name:'down bad for a fictional man',bmname:'down bad for<br/>a fictional man',flavor:'Rose & Strawberry White Choc',price:329,emoji:'🌹',cls:'pi2',badge:'romantasy girlie',desc:'He\'s not real. He\'s better. This chocolate understands.'},
+  3:{name:'the author is unwell (5 stars)',bmname:'the author<br/>is unwell<br/>(5 ★)',flavor:'Black Sesame Dark Choc',price:349,emoji:'✒️',cls:'pi3',badge:'booktok certified',desc:'Not a complaint. A review. Complex, unhinged, and completely correct.'},
+  4:{name:'one more chapter (the lie)',bmname:'one more<br/>chapter<br/>(the lie)',flavor:'Salted Caramel Milk Choc',price:279,emoji:'🕯️',cls:'pi4',badge:'most relatable',desc:'I said this at 11pm. It is now 4am. This chocolate is complicit.'},
+  5:{name:'I was normal before this',bmname:'I was normal<br/>before this',flavor:'Matcha & White Choc',price:349,emoji:'📑',cls:'pi5',badge:'personality changed',desc:'For the book that rewired your brain. Rainbow tabs sold separately.'},
+  6:{name:'they had valid points actually',bmname:'they had<br/>valid points<br/>actually',flavor:'Dark Chocolate + Sea Salt',price:329,emoji:'🌑',cls:'pi6',badge:'morally grey',desc:'Complex. Sharp. For the villain you understood. No notes, only feelings.'},
+};
+function trackProductClick(id){nml.track('product_card_click',{product_id:parseInt(id),product_name:PRODUCTS[id].name,price:PRODUCTS[id].price});}
+const pgrid=document.getElementById('pgrid');
+pgrid.innerHTML=Object.entries(PRODUCTS).map(([id,p])=>`
+  <a href="product.html?id=${id}" class="pcard" onclick="trackProductClick(${id})">
+    <div class="pcard-img">
+      <div class="pcard-badge">${p.badge}</div>
+      <div class="bm-wrap"><div class="bm ${p.cls}"><img src="img/bm-${id}.jpg" class="bm-photo" alt="${p.name}" onload="this.parentNode.classList.add('has-photo')"/><span class="bm-em">${p.emoji}</span><div class="bm-nm">${p.bmname}</div></div></div>
+    </div>
+    <div class="pcard-body">
+      <div class="pcard-label">${p.badge}</div>
+      <div class="pcard-name">${p.name}</div>
+      <div class="pcard-flavor">${p.flavor}</div>
+      <div class="pcard-row">
+        <span class="pcard-price">₹${p.price}</span>
+        <button class="pcard-atc" onclick="quickAdd(event,${id})">+ cart</button>
+      </div>
+    </div>
+  </a>`).join('');
+
+function getCart(){try{return JSON.parse(localStorage.getItem('nml_cart')||'[]')}catch{return[]}}
+function saveCart(c){localStorage.setItem('nml_cart',JSON.stringify(c))}
+function updateBadge(){const n=getCart().reduce((a,i)=>a+i.qty,0);document.querySelectorAll('.cart-count').forEach(el=>el.textContent=n)}
+
+function quickAdd(e,id){
+  e.preventDefault();e.stopPropagation();
+  const p=PRODUCTS[id],cart=getCart(),key=id+'-4 bookmarks';
+  const ex=cart.find(i=>i.key===key);
+  if(ex)ex.qty++;else cart.push({key,id,name:p.name,price:p.price,emoji:p.emoji,cls:p.cls,size:'4 bookmarks',qty:1});
+  saveCart(cart);updateBadge();
+  nml.track('quick_add_to_cart',{product_id:parseInt(id),product_name:p.name,price:p.price});
+  const btn=e.currentTarget;btn.textContent='✓';btn.style.background='#3d5c32';
+  setTimeout(()=>{btn.textContent='+ cart';btn.style.background=''},1600);
+}
+function emailSignup(e){
+  e.preventDefault();
+  nml.track('email_signup',{source:'homepage'});
+  document.getElementById('email-ok').style.display='block';
+  e.target.style.display='none';
+}
+updateBadge();
+nml.track('page_view',{page:'home'});
+document.querySelector('.btn-pop').addEventListener('click',function(){nml.track('hero_cta_click',{cta:'shop_collection'});});
+document.querySelector('.btn-ghost').addEventListener('click',function(){nml.track('hero_cta_click',{cta:'our_story'});});
+var _sd={},_sh=document.body.scrollHeight;
+window.addEventListener('scroll',function(){var p=Math.round((window.scrollY+window.innerHeight)/_sh*100);[50,75,100].forEach(function(d){if(p>=d&&!_sd[d]){_sd[d]=1;nml.track('scroll_depth',{depth:d});}});},{passive:true});
+</script>
+</body>
+</html>

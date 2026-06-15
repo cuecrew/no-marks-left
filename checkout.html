@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Checkout — No Marks Left</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <script src="analytics.js?v=2"></script>
+  <script src="interactions.js?v=1"></script>
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#1a0e06;--cream:#f5ecd5;--paper:#fdf8ef;--deep:#2a1508;--red:#8b1a1a;--gold:#c8913a;--pop:#d94f2b;--border:rgba(26,14,6,.1);--w:1020px}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.5}
+
+/* header */
+.checkout-header{background:var(--paper);border-bottom:1px solid var(--border);padding:0 28px}
+.checkout-header-inner{max-width:var(--w);margin:0 auto;height:58px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Playfair Display',serif;font-size:21px;font-weight:900;color:var(--ink);text-decoration:none}
+.logo em{color:var(--red);font-style:italic}
+.secure-tag{font-size:12px;color:rgba(26,14,6,.45);display:flex;align-items:center;gap:4px}
+
+/* steps */
+.steps-bar{background:var(--cream);border-bottom:1px solid var(--border);padding:14px 28px}
+.steps-inner{max-width:var(--w);margin:0 auto;display:flex;align-items:center;gap:0}
+.step{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
+.step-num{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1.5px solid var(--border);color:rgba(26,14,6,.35);transition:all .3s}
+.step.active .step-num{background:var(--ink);color:#fff;border-color:var(--ink)}
+.step.done .step-num{background:var(--red);color:#fff;border-color:var(--red)}
+.step-label{color:rgba(26,14,6,.35);transition:color .3s}
+.step.active .step-label{color:var(--ink);font-weight:600}
+.step.done .step-label{color:var(--red)}
+.step-arrow{width:40px;height:1px;background:var(--border);margin:0 12px;flex-shrink:0}
+
+/* layout */
+.checkout-wrap{max-width:var(--w);margin:0 auto;padding:36px 28px 80px;display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start}
+
+/* form */
+.form-section{margin-bottom:28px}
+.form-section-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row.full{grid-template-columns:1fr}
+.form-row.three{grid-template-columns:2fr 1fr 1fr}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-label{font-size:12px;font-weight:600;color:rgba(26,14,6,.5);letter-spacing:.2px}
+.form-input{border:1.5px solid var(--border);border-radius:7px;padding:11px 14px;font-size:14px;font-family:inherit;outline:none;background:#fff;transition:border-color .2s;color:var(--ink)}
+.form-input:focus{border-color:var(--ink)}
+select.form-input{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a0e06' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+
+/* card logos */
+.card-logos{display:flex;gap:6px;margin-bottom:14px}
+.card-logo{background:var(--cream);border:1px solid var(--border);border-radius:5px;padding:4px 8px;font-size:10px;font-weight:700;color:rgba(26,14,6,.5)}
+
+/* place order */
+.place-btn{width:100%;background:var(--ink);color:#fff;border:none;padding:16px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s,transform .15s;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:4px}
+.place-btn:hover{background:var(--red);transform:translateY(-1px)}
+.place-btn:disabled{opacity:.55;transform:none;cursor:not-allowed}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* payment error — the fake door */
+.pay-error{display:none;background:#fff5f5;border:1.5px solid #fca5a5;border-radius:14px;padding:22px 22px 18px;margin-top:18px}
+.pay-error.show{display:block}
+.pay-err-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.pay-err-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+.pay-err-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#b91c1c;line-height:1.2}
+.pay-err-title small{display:block;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:rgba(185,28,28,.7);font-style:normal;margin-top:3px}
+.pay-err-body{font-size:13px;color:#7f1d1d;line-height:1.7;margin-bottom:16px}
+.pay-err-divider{border:none;border-top:1px solid #fca5a5;margin:14px 0}
+.pay-err-cta-label{font-size:12px;font-weight:600;color:#7f1d1d;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.notify-row{display:flex;gap:8px}
+.notify-input{flex:1;border:1.5px solid #fca5a5;border-radius:7px;padding:11px 14px;font-size:14px;font-family:inherit;outline:none;background:#fff;transition:border-color .2s;color:var(--ink)}
+.notify-input:focus{border-color:#b91c1c}
+.notify-btn{background:var(--red);color:#fff;border:none;padding:11px 16px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .2s}
+.notify-btn:hover{background:#6d1515}
+.notify-success{font-size:13px;color:var(--red);font-weight:600;margin-top:10px;display:none;padding:10px 14px;background:#fff;border:1px solid #fca5a5;border-radius:7px}
+
+/* order summary */
+.order-box{background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:24px;position:sticky;top:80px}
+.order-box h3{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:18px}
+.order-item{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.oi-img{width:46px;height:46px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pi1{background:linear-gradient(145deg,#1a0808,#6b1a1a)}
+.pi2{background:linear-gradient(145deg,#1e0c26,#6e2070)}
+.pi3{background:linear-gradient(145deg,#0a0a14,#1e1e38)}
+.pi4{background:linear-gradient(145deg,#1a0c04,#6b3a08)}
+.pi5{background:linear-gradient(145deg,#0a140a,#1e4020)}
+.pi6{background:linear-gradient(145deg,#141418,#2c2c3c)}
+.oi-info{flex:1;min-width:0}
+.oi-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oi-variant{font-size:11px;color:rgba(26,14,6,.45);font-style:italic}
+.oi-price{font-size:13px;font-weight:700;flex-shrink:0}
+.sum-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+.sum-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;color:rgba(26,14,6,.6)}
+.sum-row.total{font-weight:700;font-size:15px;color:var(--ink);border-top:1px solid var(--border);padding-top:10px;margin-top:4px}
+.order-note{font-size:12px;color:rgba(26,14,6,.4);margin-top:14px;text-align:center;line-height:1.5}
+
+footer{background:var(--ink);color:rgba(255,255,255,.4);margin-top:80px}
+.f-inner{max-width:var(--w);margin:0 auto;padding:32px 28px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.f-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff}
+.f-logo em{color:var(--gold);font-style:italic}
+
+@media(max-width:720px){
+  .checkout-wrap{grid-template-columns:1fr}
+  .order-box{position:static;order:-1}
+  .form-row,.form-row.three{grid-template-columns:1fr}
+}
+  </style>
+</head>
+<body>
+
+<header class="checkout-header">
+  <div class="checkout-header-inner">
+    <a href="index.html" class="logo">No <em>Marks</em> Left</a>
+    <div class="secure-tag">🔒 Secure checkout</div>
+  </div>
+</header>
+
+<div class="steps-bar">
+  <div class="steps-inner">
+    <div class="step done" id="step1"><div class="step-num">✓</div><span class="step-label">Contact</span></div>
+    <div class="step-arrow"></div>
+    <div class="step active" id="step2"><div class="step-num">2</div><span class="step-label">Shipping</span></div>
+    <div class="step-arrow"></div>
+    <div class="step" id="step3"><div class="step-num">3</div><span class="step-label">Payment</span></div>
+  </div>
+</div>
+
+<div class="checkout-wrap">
+  <!-- LEFT: form -->
+  <div>
+    <div class="form-section">
+      <div class="form-section-title">Contact</div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="email-field" placeholder="you@example.com" required/>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Shipping address</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">First name</label><input class="form-input" placeholder="Arjun"/></div>
+        <div class="form-group"><label class="form-label">Last name</label><input class="form-input" placeholder="Sharma"/></div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group"><label class="form-label">Address</label><input class="form-input" placeholder="123 MG Road, Apt 4B"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">City</label><input class="form-input" placeholder="Bangalore"/></div>
+        <div class="form-group"><label class="form-label">PIN code</label><input class="form-input" placeholder="560001" maxlength="6"/></div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group"><label class="form-label">State</label>
+          <select class="form-input">
+            <option value="">Select state…</option>
+            <option>Karnataka</option><option>Maharashtra</option><option>Delhi</option>
+            <option>Tamil Nadu</option><option>Telangana</option><option>Gujarat</option>
+            <option>Rajasthan</option><option>West Bengal</option><option>Kerala</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" placeholder="+91 98765 43210"/></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Payment</div>
+      <div class="card-logos">
+        <span class="card-logo">VISA</span>
+        <span class="card-logo">MC</span>
+        <span class="card-logo">RUPAY</span>
+        <span class="card-logo">UPI</span>
+        <span class="card-logo">NETBKG</span>
+      </div>
+      <div class="form-row full">
+        <div class="form-group"><label class="form-label">Card number</label>
+          <input class="form-input" id="card-num" placeholder="1234 5678 9012 3456" maxlength="19" oninput="fmtCard(this)"/>
+        </div>
+      </div>
+      <div class="form-row three">
+        <div class="form-group"><label class="form-label">Name on card</label><input class="form-input" placeholder="Arjun Sharma"/></div>
+        <div class="form-group"><label class="form-label">Expiry</label><input class="form-input" placeholder="MM / YY" maxlength="7" oninput="fmtExpiry(this)"/></div>
+        <div class="form-group"><label class="form-label">CVV</label><input class="form-input" type="password" placeholder="•••" maxlength="3"/></div>
+      </div>
+    </div>
+
+    <button class="place-btn" id="place-btn" onclick="placeOrder()">
+      <span id="btn-text">Place order</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+
+    <!-- THE FAKE DOOR: payment error -->
+    <div class="pay-error" id="pay-error">
+      <div class="pay-err-head">
+        <div class="pay-err-icon">⚠️</div>
+        <div>
+          <div class="pay-err-title">Payment didn't go through
+            <small>Your card has NOT been charged.</small>
+          </div>
+        </div>
+      </div>
+      <p class="pay-err-body">Our payment processor is experiencing high load right now — this happens sometimes when we get a lot of orders at once. It's us, not you. Try again in a few minutes, or drop your email and we'll notify you the moment it's sorted.</p>
+      <hr class="pay-err-divider"/>
+      <div class="pay-err-cta-label">Notify me when payments are back</div>
+      <div class="notify-row">
+        <input class="notify-input" type="email" id="notify-email" placeholder="your@email.com"/>
+        <button class="notify-btn" onclick="submitNotify()">Notify me</button>
+      </div>
+      <div class="notify-success" id="notify-success">✓ You're on the list. We'll email you as soon as it's fixed — usually within the hour.</div>
+    </div>
+  </div>
+
+  <!-- RIGHT: order summary -->
+  <div class="order-box">
+    <h3>Order summary</h3>
+    <div id="order-items"></div>
+    <hr class="sum-divider"/>
+    <div class="sum-row"><span>Subtotal</span><span id="sum-sub"></span></div>
+    <div class="sum-row"><span>Shipping</span><span id="sum-ship"></span></div>
+    <div class="sum-row total"><span>Total</span><span id="sum-total"></span></div>
+    <div class="order-note">🍫 Made fresh & shipped within 3–5 days of your order</div>
+  </div>
+</div>
+
+<footer>
+  <div class="f-inner">
+    <div class="f-logo">No <em>Marks</em> Left</div>
+    <div style="font-size:12px">© 2025 No Marks Left · hello@nomarksleft.com</div>
+  </div>
+</footer>
+
+<script>
+// order summary
+function getCart(){try{return JSON.parse(localStorage.getItem('nml_cart')||'[]')}catch{return[]}}
+const cart=getCart();
+const sub=cart.reduce((a,i)=>a+i.price*i.qty,0);
+const ship=sub>=499?0:80;
+
+document.getElementById('order-items').innerHTML=cart.length?cart.map(i=>`
+  <div class="order-item">
+    <div class="oi-img ${i.cls}">${i.emoji}</div>
+    <div class="oi-info">
+      <div class="oi-name">${i.name}</div>
+      <div class="oi-variant">${i.size} × ${i.qty}</div>
+    </div>
+    <div class="oi-price">₹${i.price*i.qty}</div>
+  </div>`).join(''):'<div style="font-size:13px;color:rgba(26,14,6,.4);text-align:center;padding:20px 0">Your cart is empty.</div>';
+
+document.getElementById('sum-sub').textContent='₹'+sub;
+document.getElementById('sum-ship').textContent=ship?'₹'+ship:'Free 🎉';
+document.getElementById('sum-total').textContent='₹'+(sub+ship);
+nml.track('page_view',{page:'checkout',cart_value:sub+ship,item_count:cart.length});
+
+// pre-fill notify email from contact field
+document.getElementById('email-field').addEventListener('blur',function(){
+  if(this.value)document.getElementById('notify-email').value=this.value;
+});
+
+// card formatting
+function fmtCard(el){let v=el.value.replace(/\D/g,'').substring(0,16);el.value=v.replace(/(.{4})/g,'$1 ').trim()}
+function fmtExpiry(el){let v=el.value.replace(/\D/g,'');if(v.length>=2)v=v.slice(0,2)+' / '+v.slice(2,4);el.value=v}
+
+// step tracking for abandonment
+var _lastStep='loaded';
+document.getElementById('email-field').addEventListener('blur',function(){if(this.value)_lastStep='contact_filled';});
+document.getElementById('card-num').addEventListener('focus',function(){
+  _lastStep='payment_reached';
+  nml.track('checkout_payment_reached',{cart_value:sub+ship});
+},{once:true});
+window.addEventListener('beforeunload',function(){
+  nml.track('checkout_abandoned',{last_step:_lastStep,cart_value:sub+ship});
+});
+
+// progress steps
+function setStep(n){
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('step'+i);
+    el.classList.remove('active','done');
+    if(i<n)el.classList.add('done');
+    else if(i===n)el.classList.add('active');
+    if(i<n)el.querySelector('.step-num').textContent='✓';
+    else el.querySelector('.step-num').textContent=i;
+  });
+}
+
+// THE FAKE DOOR: place order → show spinner → show error
+function placeOrder(){
+  const btn=document.getElementById('place-btn');
+  const txt=document.getElementById('btn-text');
+  const spin=document.getElementById('spinner');
+  btn.disabled=true;
+  txt.textContent='Processing…';
+  spin.style.display='block';
+  setStep(3);
+  nml.track('payment_attempted',{cart_value:sub+ship,item_count:cart.length});
+
+  setTimeout(()=>{
+    btn.disabled=false;
+    txt.textContent='Try again';
+    spin.style.display='none';
+    const err=document.getElementById('pay-error');
+    err.classList.add('show');
+    err.scrollIntoView({behavior:'smooth',block:'nearest'});
+    nml.track('fake_door_shown',{cart_value:sub+ship});
+    const email=document.getElementById('email-field').value;
+    if(email)document.getElementById('notify-email').value=email;
+  },2800);
+}
+
+// capture email — replace YOUR_FORM_ID with your Formspree form
+const FORMSPREE_ID='YOUR_FORM_ID';
+async function submitNotify(){
+  const email=document.getElementById('notify-email').value;
+  if(!email)return;
+  nml.track('waitlist_email_submitted',{source:'checkout-payment-error',cart_value:sub+ship,item_count:cart.length});
+  nml.identify(email);
+  const btn=document.querySelector('.notify-btn');
+  btn.textContent='Saving…';btn.disabled=true;
+  try{
+    if(FORMSPREE_ID!=='YOUR_FORM_ID'){
+      await fetch('https://formspree.io/f/'+FORMSPREE_ID,{
+        method:'POST',
+        body:JSON.stringify({email,source:'checkout-payment-error',sub,cart_size:cart.length}),
+        headers:{'Content-Type':'application/json','Accept':'application/json'}
+      });
+    }
+  }catch(e){}
+  document.getElementById('notify-success').style.display='block';
+  btn.style.display='none';
+  document.querySelector('.notify-input').style.display='none';
+}
+</script>
+</body>
+</html>

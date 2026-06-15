@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Product — No Marks Left</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <script src="analytics.js?v=2"></script>
+  <script src="interactions.js?v=1"></script>
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#1a0e06;--cream:#f5ecd5;--paper:#fdf8ef;--deep:#2a1508;--red:#8b1a1a;--gold:#c8913a;--pop:#d94f2b;--sage:#3d5c32;--border:rgba(26,14,6,.1);--w:1100px}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.5}
+header{position:sticky;top:0;z-index:200;background:var(--paper);border-bottom:1px solid var(--border)}
+.h-inner{max-width:var(--w);margin:0 auto;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.logo{font-family:'Playfair Display',serif;font-size:21px;font-weight:900;color:var(--ink);text-decoration:none;letter-spacing:-.5px}
+.logo em{color:var(--red);font-style:italic}
+nav{display:flex;gap:28px}
+nav a{font-size:13px;font-weight:500;color:var(--ink);text-decoration:none;opacity:.5;transition:opacity .15s}
+nav a:hover{opacity:1}
+.cart-btn{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);background:var(--cream);border:1px solid var(--border);padding:8px 16px;border-radius:100px;transition:all .2s}
+.cart-btn:hover{background:var(--ink);color:#fff}
+.cart-count{background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.breadcrumb{max-width:var(--w);margin:0 auto;padding:16px 28px 0;font-size:13px;color:rgba(26,14,6,.45)}
+.breadcrumb a{color:rgba(26,14,6,.45);text-decoration:none}
+.breadcrumb a:hover{color:var(--ink)}
+
+/* product layout */
+.product-wrap{max-width:var(--w);margin:0 auto;padding:28px 28px 80px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.prod-img-area{position:sticky;top:80px}
+.prod-img{aspect-ratio:1;border-radius:16px;display:flex;align-items:center;justify-content:center;position:relative;background:var(--cream);border:1px solid var(--border);overflow:hidden}
+.prod-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 28% 72%,rgba(200,145,58,.09) 0%,transparent 55%),radial-gradient(circle at 72% 22%,rgba(139,26,26,.06) 0%,transparent 50%)}
+.prod-bm-wrap{width:46%;filter:drop-shadow(0 10px 32px rgba(0,0,0,.38));position:relative;z-index:2}
+.prod-bm{clip-path:polygon(0 0,100% 0,100% 87%,50% 100%,0 87%);aspect-ratio:1/2.6;display:flex;flex-direction:column;align-items:center;padding-top:14%;position:relative;overflow:hidden}
+.prod-bm::after{content:'';position:absolute;top:0;left:0;right:52%;bottom:35%;background:linear-gradient(130deg,rgba(255,255,255,.24) 0%,transparent 65%);z-index:1;pointer-events:none}
+.prod-bm-photo{display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.prod-bm.has-photo .prod-bm-photo{display:block}
+.prod-bm.has-photo .prod-bm-em,.prod-bm.has-photo .prod-bm-nm{display:none}
+.prod-bm.has-photo::after{display:none}
+.prod-bm-em{font-size:72px;position:relative;z-index:2}
+.prod-bm-nm{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:rgba(255,255,255,.9);text-align:center;line-height:1.35;margin-top:8px;position:relative;z-index:2;padding:0 10%}
+.prod-badge{position:absolute;top:18px;left:18px;background:var(--red);color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:5px 10px;border-radius:100px}
+.pi1{background:linear-gradient(150deg,#1a0808,#6b1a1a)}
+.pi2{background:linear-gradient(150deg,#1e0c26,#6e2070)}
+.pi3{background:linear-gradient(150deg,#0a0a14,#1e1e38)}
+.pi4{background:linear-gradient(150deg,#1a0c04,#6b3a08)}
+.pi5{background:linear-gradient(150deg,#0a140a,#1e4020)}
+.pi6{background:linear-gradient(150deg,#141418,#2c2c3c)}
+.prod-mini-imgs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.prod-mini{border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;border:2px solid transparent;transition:border-color .2s;opacity:.6}
+.prod-mini.active{border-color:var(--ink);opacity:1}
+
+/* product detail */
+.prod-detail{}
+.prod-eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--red);margin-bottom:10px}
+.prod-name{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);font-weight:900;line-height:1.05;margin-bottom:8px}
+.prod-tagline{font-size:15px;color:rgba(26,14,6,.55);font-style:italic;margin-bottom:18px}
+.prod-price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:24px}
+.prod-price{font-size:26px;font-weight:700}
+.prod-flavour-chip{background:var(--cream);border:1px solid var(--border);border-radius:100px;padding:4px 12px;font-size:12px;font-weight:500;color:rgba(26,14,6,.6)}
+
+/* options */
+.opt-block{margin-bottom:20px}
+.opt-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(26,14,6,.5);margin-bottom:10px;display:block}
+.opt-pills{display:flex;gap:8px;flex-wrap:wrap}
+.opt-pill{padding:9px 18px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:#fff;transition:all .15s;font-family:inherit}
+.opt-pill.active,.opt-pill:hover{border-color:var(--ink);background:var(--ink);color:#fff}
+.qty-row{display:flex;align-items:center;gap:12px}
+.qty-btn{width:38px;height:38px;border:1.5px solid var(--border);background:#fff;border-radius:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s;font-family:inherit}
+.qty-btn:hover{border-color:var(--ink)}
+.qty-val{font-size:16px;font-weight:700;min-width:28px;text-align:center}
+
+/* ATC */
+.atc-btn{width:100%;background:var(--ink);color:#fff;border:none;padding:16px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s,transform .15s;margin-bottom:12px;margin-top:8px}
+.atc-btn:hover{background:var(--red);transform:translateY(-1px)}
+.atc-success{display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 16px;font-size:13px;font-weight:600;color:#166534;text-align:center;margin-bottom:12px}
+.trust-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.t-item{font-size:12px;color:rgba(26,14,6,.48);display:flex;align-items:center;gap:4px}
+
+/* product info sections */
+.divider{border:none;border-top:1px solid var(--border);margin:28px 0}
+.info-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:14px}
+.notes-list{display:flex;flex-direction:column;gap:8px}
+.note-item{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.55;color:rgba(26,14,6,.7)}
+.note-dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:7px}
+.pairs-list{display:flex;flex-wrap:wrap;gap:8px}
+.pair-chip{border:1px solid var(--border);border-radius:6px;padding:7px 12px;font-size:13px;background:#fff;color:rgba(26,14,6,.75)}
+.pair-chip em{color:var(--red);font-style:normal}
+
+/* reviews */
+.reviews-list{display:flex;flex-direction:column;gap:14px}
+.rev-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px}
+.rev-stars{color:var(--gold);font-size:12px;letter-spacing:2px;margin-bottom:8px}
+.rev-text{font-size:14px;color:rgba(26,14,6,.7);line-height:1.7;font-style:italic;margin-bottom:8px}
+.rev-handle{font-size:11px;color:rgba(26,14,6,.35);font-weight:600}
+
+/* more products */
+.more-section{background:var(--cream);padding:56px 28px}
+.more-inner{max-width:var(--w);margin:0 auto}
+.more-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;margin-bottom:24px}
+.more-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mini-card{text-decoration:none;color:inherit;background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:block;transition:transform .2s}
+.mini-card:hover{transform:translateY(-3px)}
+.mini-img{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;background:var(--cream);position:relative;overflow:hidden}
+.mini-bm-w{width:55%;filter:drop-shadow(0 4px 12px rgba(0,0,0,.28));position:relative;z-index:2}
+.mini-bm{clip-path:polygon(0 0,100% 0,100% 87%,50% 100%,0 87%);aspect-ratio:1/2.4;display:flex;align-items:flex-start;justify-content:center;padding-top:22%;position:relative;overflow:hidden}
+.mini-bm::after{content:'';position:absolute;top:0;left:0;right:52%;bottom:36%;background:linear-gradient(130deg,rgba(255,255,255,.18) 0%,transparent 65%)}
+.mini-body{padding:10px 12px}
+.mini-name{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;margin-bottom:2px}
+.mini-price{font-size:13px;color:rgba(26,14,6,.5)}
+
+footer{background:var(--ink);color:rgba(255,255,255,.4)}
+.f-inner{max-width:var(--w);margin:0 auto;padding:36px 28px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.f-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff}
+.f-logo em{color:var(--gold);font-style:italic}
+.f-links{display:flex;gap:20px}
+.f-links a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none}
+.f-links a:hover{color:#fff}
+
+@media(max-width:768px){
+  .product-wrap{grid-template-columns:1fr;gap:28px}
+  .prod-img-area{position:static}
+  .more-grid{grid-template-columns:repeat(2,1fr)}
+  nav{display:none}
+}
+  </style>
+</head>
+<body>
+<header>
+  <div class="h-inner">
+    <a href="index.html" class="logo">No <em>Marks</em> Left</a>
+    <nav><a href="index.html">Shop</a><a href="about.html">Our Story</a></nav>
+    <a href="cart.html" class="cart-btn">🛒 Cart <span class="cart-count" id="cart-count">0</span></a>
+  </div>
+</header>
+
+<div class="breadcrumb"><a href="index.html">Home</a> › <span id="bc">Product</span></div>
+
+<div class="product-wrap">
+  <div class="prod-img-area">
+    <div class="prod-img" id="prod-img">
+      <div class="prod-badge" id="prod-badge"></div>
+    </div>
+    <div class="prod-mini-imgs" id="mini-imgs"></div>
+  </div>
+
+  <div class="prod-detail">
+    <div class="prod-eyebrow" id="prod-eyebrow"></div>
+    <h1 class="prod-name" id="prod-name"></h1>
+    <div class="prod-tagline" id="prod-tagline"></div>
+    <div class="prod-price-row">
+      <div class="prod-price" id="prod-price"></div>
+      <div class="prod-flavour-chip" id="prod-flavour"></div>
+    </div>
+    <div class="prod-desc" id="prod-desc" style="font-size:15px;line-height:1.75;color:rgba(26,14,6,.65);margin-bottom:24px"></div>
+
+    <div class="opt-block">
+      <span class="opt-label">Pack size</span>
+      <div class="opt-pills">
+        <button class="opt-pill active" onclick="selectPill(this,'size')">4 bookmarks — ₹base</button>
+        <button class="opt-pill" onclick="selectPill(this,'size')">8 bookmarks — ₹save10</button>
+        <button class="opt-pill" onclick="selectPill(this,'size')">12 bookmarks — ₹save20</button>
+      </div>
+    </div>
+
+    <div class="opt-block">
+      <span class="opt-label">Quantity</span>
+      <div class="qty-row">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-val" id="qty-val">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+
+    <div class="atc-success" id="atc-ok">✓ Added to cart! <a href="cart.html" style="color:#166534;text-underline-offset:3px">View cart →</a></div>
+    <button class="atc-btn" onclick="addToCart()">Add to cart</button>
+
+    <div class="trust-row">
+      <span class="t-item">🚚 Free shipping over ₹499</span>
+      <span class="t-item">📦 Ships in 3–5 days</span>
+      <span class="t-item">✨ Made fresh per order</span>
+      <span class="t-item">🍫 Food-safe edible ink</span>
+    </div>
+
+    <hr class="divider"/>
+
+    <div class="info-title">What's in it</div>
+    <div class="notes-list" id="notes-list"></div>
+
+    <hr class="divider"/>
+
+    <div class="info-title">Pairs perfectly with</div>
+    <div class="pairs-list" id="pairs-list"></div>
+
+    <hr class="divider"/>
+
+    <div class="info-title">What readers are saying</div>
+    <div class="reviews-list" id="reviews-list"></div>
+  </div>
+</div>
+
+<!-- more products -->
+<div class="more-section">
+  <div class="more-inner">
+    <div class="more-title">You might also love</div>
+    <div class="more-grid" id="more-grid"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="f-inner">
+    <div class="f-logo">No <em>Marks</em> Left</div>
+    <div class="f-links">
+      <a href="index.html">Shop</a>
+      <a href="cart.html">Cart</a>
+      <a href="mailto:hello@nomarksleft.com">Contact</a>
+    </div>
+    <div style="font-size:12px">© 2025 No Marks Left</div>
+  </div>
+</footer>
+
+<script>
+const PRODUCTS={
+  1:{name:'my roman empire',bmname:'my roman<br/>empire',flavor:'Dark Chocolate 70%',price:299,emoji:'🏛️',cls:'pi1',badge:'living rent free',tagline:'for the book that never left',
+    desc:'Rich, snappy 70% dark chocolate. For the book that moved into your head three years ago and hasn\'t paid rent once. No explanations. No apologies. You think about it constantly and that is completely normal.',
+    notes:['70% single-origin dark chocolate, no dairy','Food-safe edible ink, no artificial colours','Snappy tempered finish, slight bitter edge','4 bookmarks per pack, fresh per order'],
+    pairs:['The Night Circus','Piranesi','The Secret History','The Goldfinch'],
+    reviews:[
+      {stars:5,text:'"bought this for the book that destroyed me in 2022. ate it while rereading. still not over it. this chocolate gets it."',handle:'@perma.brainworm · BookTok'},
+      {stars:5,text:'"the bitter edge is exactly right. rich, intense, stays with you — like that one chapter I\'ve thought about every day for 3 years."',handle:'@dark.academia.forever · Instagram'},
+    ]},
+  2:{name:'down bad for a fictional man',bmname:'down bad for<br/>a fictional man',flavor:'Rose & Strawberry White Choc',price:329,emoji:'🌹',cls:'pi2',badge:'romantasy girlie',tagline:'he\'s not real. he\'s better.',
+    desc:'White chocolate with real rose water and dried strawberry. Sweet, slightly irrational, completely correct. For the reader who has permanently outsourced their standards to people who don\'t exist and has zero regrets.',
+    notes:['Real rose water, dried strawberry pieces','Belgian white chocolate base','Food-safe edible ink, no artificial colours','4 bookmarks per pack, fresh per order'],
+    pairs:['A Court of Thorns and Roses','Fourth Wing','The Cruel Prince','Six of Crows'],
+    reviews:[
+      {stars:5,text:'"he is fictional and he is still the standard. this chocolate understands. 10/10 would ruin my life again."',handle:'@romantasy.rotting · BookTok'},
+      {stars:5,text:'"the rose is subtle and perfect. like my taste in men who don\'t exist. sent 4 as gifts. we\'re all fine."',handle:'@delulu.girlie · Instagram'},
+    ]},
+  3:{name:'the author is unwell (5 stars)',bmname:'the author<br/>is unwell<br/>(5 ★)',flavor:'Black Sesame Dark Choc',price:349,emoji:'✒️',cls:'pi3',badge:'booktok certified',tagline:'not a complaint. a review.',
+    desc:'Dark chocolate with black sesame paste — complex, earthy, slightly unhinged. For the book that should not have been written, was written anyway, and you rated it 5 stars without hesitation. The author is unwell. So are you now. Welcome.',
+    notes:['Black sesame paste, 65% dark chocolate','Earthy, nutty, genuinely complex flavour','Food-safe edible ink, no artificial colours','4 bookmarks per pack, fresh per order'],
+    pairs:['The Atlas Six','Babel','The Poppy War','Ninth House'],
+    reviews:[
+      {stars:5,text:'"complex and a little unhinged. exactly like every book I rate 5 stars. the author is unwell and I mean that as the highest compliment."',handle:'@booktok.unhinged · BookTok'},
+      {stars:5,text:'"the black sesame makes it interesting and slightly chaotic. like the author decided to go feral at chapter 22 and I loved every page."',handle:'@book.chaos.agent · Instagram'},
+    ]},
+  4:{name:'one more chapter (the lie)',bmname:'one more<br/>chapter<br/>(the lie)',flavor:'Salted Caramel Milk Choc',price:279,emoji:'🕯️',cls:'pi4',badge:'most relatable',tagline:'I said this at 11pm. it is now 4am.',
+    desc:'Buttery milk chocolate with a ribbon of sea-salted caramel. The most comforting lie in reader culture. You said one more chapter at 11pm. It is now 4am. You have no regrets. This chocolate is complicit.',
+    notes:['Sea salt and caramel, milk chocolate base','Warm, buttery, irresistible — by design','Food-safe edible ink, no artificial colours','4 bookmarks per pack, fresh per order'],
+    pairs:['The House in the Cerulean Sea','Tomorrow and Tomorrow and Tomorrow','Happy Place','Beach Read'],
+    reviews:[
+      {stars:5,text:'"ate it at 2am after the chapter I swore would be the last. it was not the last. ate another bookmark. still no regrets."',handle:'@one.more.chapter.lie · BookTok'},
+      {stars:5,text:'"salted caramel is always the right call. as is one more chapter. both beautiful lies I tell myself regularly."',handle:'@comfort.read.era · Instagram'},
+    ]},
+  5:{name:'I was normal before this',bmname:'I was normal<br/>before this',flavor:'Matcha & White Choc',price:349,emoji:'📑',cls:'pi5',badge:'personality changed',tagline:'blame the author, not me.',
+    desc:'Ceremonial matcha through white chocolate — grounding, slightly earthy, quietly chaotic. For the book that rewired your brain, made rainbow annotation tabs a personality trait, and permanently changed how you exist in the world.',
+    notes:['Ceremonial grade matcha powder','Belgian white chocolate base','Food-safe edible ink, no artificial colours','4 bookmarks per pack, fresh per order'],
+    pairs:['Lessons in Chemistry','The Secret History','Remarkably Bright Creatures','Yellowface'],
+    reviews:[
+      {stars:5,text:'"before this book: normal person. after: 47 tabs, 3 annotation colours, strong opinions. 5 stars. blame the author."',handle:'@normal.no.more · BookTok'},
+      {stars:5,text:'"the matcha is genuinely good — not fake-sweet. like a book that actually earns its hype. I have not recovered from either."',handle:'@tab.hoarder · Instagram'},
+    ]},
+  6:{name:'they had valid points actually',bmname:'they had<br/>valid points<br/>actually',flavor:'Dark Chocolate + Sea Salt',price:329,emoji:'🌑',cls:'pi6',badge:'morally grey',tagline:'complex. dark. correct.',
+    desc:'Dark chocolate with flaky sea salt — sharp contrast, complex finish. For the villain you understood. For the character everyone else called the antagonist and you called \'kind of right, actually\'. No notes. Only feelings.',
+    notes:['65% dark chocolate, flaky sea salt finish','Sharp contrast, lingers with complexity','Food-safe edible ink, no artificial colours','4 bookmarks per pack, fresh per order'],
+    pairs:['Six of Crows','Shadow and Bone','The Gilded Wolves','An Ember in the Ashes'],
+    reviews:[
+      {stars:5,text:'"complex flavour for complex feelings about a villain who was objectively kind of right. I have no further comments."',handle:'@villain.defender · BookTok'},
+      {stars:5,text:'"the sea salt makes it sharp and interesting. like a morally grey character whose moral compass is purely ornamental. 5 stars."',handle:'@morally.grey.club · Instagram'},
+    ]},
+};
+
+const id=parseInt(new URLSearchParams(location.search).get('id'))||1;
+const p=PRODUCTS[id]||PRODUCTS[1];
+
+// render page
+document.title=p.name+' — No Marks Left';
+document.getElementById('bc').textContent=p.name;
+document.getElementById('prod-eyebrow').textContent=p.badge;
+document.getElementById('prod-name').textContent=p.name;
+document.getElementById('prod-tagline').textContent=p.tagline;
+document.getElementById('prod-price').textContent='₹'+p.price;
+document.getElementById('prod-flavour').textContent=p.flavor;
+document.getElementById('prod-desc').textContent=p.desc;
+document.getElementById('prod-badge').textContent=p.badge;
+
+const imgEl=document.getElementById('prod-img');
+imgEl.className='prod-img';
+const bmWrap=document.createElement('div');
+bmWrap.className='prod-bm-wrap';
+bmWrap.innerHTML=`<div class="prod-bm ${p.cls}"><img src="img/bm-${id}.jpg" class="prod-bm-photo" alt="${p.name}" onload="this.parentNode.classList.add('has-photo')"/><span class="prod-bm-em">${p.emoji}</span><div class="prod-bm-nm">${p.bmname}</div></div>`;
+imgEl.appendChild(bmWrap);
+
+// pack size pills — update price display
+const base=p.price;
+const pills=document.querySelectorAll('.opt-pill');
+pills[0].textContent=`4 bookmarks — ₹${base}`;
+pills[1].textContent=`8 bookmarks — ₹${Math.round(base*1.8)} (save 10%)`;
+pills[2].textContent=`12 bookmarks — ₹${Math.round(base*2.5)} (save 17%)`;
+
+// mini imgs (show other 3 products)
+const others=Object.entries(PRODUCTS).filter(([oid])=>parseInt(oid)!==id).slice(0,4);
+const miniGrid=document.getElementById('mini-imgs');
+miniGrid.innerHTML=others.map(([oid,op])=>`
+  <a href="product.html?id=${oid}" class="prod-mini ${op.cls}" style="border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;opacity:.5;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.5">${op.emoji}</a>`).join('');
+
+// notes
+document.getElementById('notes-list').innerHTML=p.notes.map(n=>`
+  <div class="note-item"><div class="note-dot"></div><span>${n}</span></div>`).join('');
+
+// pairs
+document.getElementById('pairs-list').innerHTML=p.pairs.map(b=>`
+  <div class="pair-chip">${b}</div>`).join('');
+
+// reviews
+document.getElementById('reviews-list').innerHTML=p.reviews.map(r=>`
+  <div class="rev-card">
+    <div class="rev-stars">${'★'.repeat(r.stars)}</div>
+    <div class="rev-text">${r.text}</div>
+    <div class="rev-handle">${r.handle}</div>
+  </div>`).join('');
+
+// more products
+const moreIds=Object.entries(PRODUCTS).filter(([oid])=>parseInt(oid)!==id).slice(0,4);
+document.getElementById('more-grid').innerHTML=moreIds.map(([oid,op])=>`
+  <a href="product.html?id=${oid}" class="mini-card">
+    <div class="mini-img"><div class="mini-bm-w"><div class="mini-bm ${op.cls}"><img src="img/bm-${oid}.jpg" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1" alt="${op.name}" onload="this.style.display='block';this.nextElementSibling.style.display='none'"/><span style="font-size:22px;position:relative;z-index:2">${op.emoji}</span></div></div></div>
+    <div class="mini-body">
+      <div class="mini-name">${op.name}</div>
+      <div class="mini-price">₹${op.price}</div>
+    </div>
+  </a>`).join('');
+
+// cart
+function getCart(){try{return JSON.parse(localStorage.getItem('nml_cart')||'[]')}catch{return[]}}
+function saveCart(c){localStorage.setItem('nml_cart',JSON.stringify(c))}
+function updateBadge(){const n=getCart().reduce((a,i)=>a+i.qty,0);document.querySelectorAll('.cart-count').forEach(el=>el.textContent=n)}
+updateBadge();
+
+nml.track('page_view',{page:'product',product_id:id,product_name:p.name,price:p.price});
+let qty=1;
+function changeQty(d){qty=Math.max(1,qty+d);document.getElementById('qty-val').textContent=qty}
+function selectPill(el,group){el.closest('.opt-pills').querySelectorAll('.opt-pill').forEach(b=>b.classList.remove('active'));el.classList.add('active');nml.track('pack_size_selected',{product_id:id,product_name:p.name,pack_size:el.textContent.split(' — ')[0]});}
+
+function addToCart(){
+  const size=document.querySelector('.opt-pills .opt-pill.active').textContent.split(' — ')[0];
+  const cart=getCart(),key=id+'-'+size;
+  const ex=cart.find(i=>i.key===key);
+  if(ex)ex.qty+=qty;else cart.push({key,id,name:p.name,price:p.price,emoji:p.emoji,cls:p.cls,size,qty});
+  saveCart(cart);updateBadge();
+  nml.track('add_to_cart',{product_id:id,product_name:p.name,pack_size:size,qty,price:p.price});
+  const ok=document.getElementById('atc-ok');ok.style.display='block';
+  setTimeout(()=>ok.style.display='none',3500);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Cart — No Marks Left</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <script src="analytics.js?v=2"></script>
+  <script src="interactions.js?v=1"></script>
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#1a0e06;--cream:#f5ecd5;--paper:#fdf8ef;--deep:#2a1508;--red:#8b1a1a;--gold:#c8913a;--pop:#d94f2b;--border:rgba(26,14,6,.1);--w:960px}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.5}
+header{position:sticky;top:0;z-index:200;background:var(--paper);border-bottom:1px solid var(--border)}
+.h-inner{max-width:1100px;margin:0 auto;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.logo{font-family:'Playfair Display',serif;font-size:21px;font-weight:900;color:var(--ink);text-decoration:none;letter-spacing:-.5px}
+.logo em{color:var(--red);font-style:italic}
+nav{display:flex;gap:28px}
+nav a{font-size:13px;font-weight:500;color:var(--ink);text-decoration:none;opacity:.5;transition:opacity .15s}
+nav a:hover{opacity:1}
+.cart-btn{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);background:var(--cream);border:1px solid var(--border);padding:8px 16px;border-radius:100px}
+.cart-count{background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+
+/* shipping progress */
+.ship-progress{background:var(--cream);border-bottom:1px solid var(--border);padding:14px 28px}
+.ship-inner{max-width:var(--w);margin:0 auto}
+.ship-msg{font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ship-bar{height:4px;background:rgba(26,14,6,.1);border-radius:100px;overflow:hidden}
+.ship-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:100px;transition:width .4s}
+
+/* page */
+.cart-page{max-width:var(--w);margin:0 auto;padding:40px 28px 80px;display:grid;grid-template-columns:1fr 340px;gap:40px;align-items:start}
+.cart-page h1{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;margin-bottom:6px;grid-column:1/-1}
+.cart-sub{font-size:14px;color:rgba(26,14,6,.45);margin-bottom:32px;grid-column:1/-1;font-style:italic}
+
+/* items */
+.items-col{}
+.cart-item{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.item-img{width:76px;height:76px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0}
+.pi1{background:linear-gradient(145deg,#1a0808,#6b1a1a)}
+.pi2{background:linear-gradient(145deg,#1e0c26,#6e2070)}
+.pi3{background:linear-gradient(145deg,#0a0a14,#1e1e38)}
+.pi4{background:linear-gradient(145deg,#1a0c04,#6b3a08)}
+.pi5{background:linear-gradient(145deg,#0a140a,#1e4020)}
+.pi6{background:linear-gradient(145deg,#141418,#2c2c3c)}
+.item-info{flex:1}
+.item-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:3px}
+.item-variant{font-size:12px;color:rgba(26,14,6,.45);margin-bottom:10px;font-style:italic}
+.item-price{font-size:15px;font-weight:700}
+.item-remove{font-size:12px;color:rgba(26,14,6,.35);text-decoration:underline;text-underline-offset:2px;cursor:pointer;background:none;border:none;padding:0;margin-top:6px;display:block;font-family:inherit;transition:color .15s}
+.item-remove:hover{color:var(--red)}
+.item-qty{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.qty-btn{width:32px;height:32px;border:1.5px solid var(--border);background:#fff;border-radius:6px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
+.qty-btn:hover{border-color:var(--ink)}
+.qty-n{font-size:14px;font-weight:700;min-width:22px;text-align:center}
+
+/* empty */
+.empty-state{text-align:center;padding:80px 0;color:rgba(26,14,6,.4)}
+.empty-emoji{font-size:56px;margin-bottom:16px}
+.empty-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:8px;color:var(--ink)}
+.empty-sub{font-size:14px;margin-bottom:24px}
+.empty-cta{background:var(--ink);color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-size:14px;font-weight:600;display:inline-block;transition:background .2s}
+.empty-cta:hover{background:var(--red)}
+
+/* summary */
+.summary-box{background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:24px;position:sticky;top:80px}
+.summary-box h2{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:18px}
+.sum-row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:10px;color:rgba(26,14,6,.6)}
+.sum-row.total{font-weight:700;font-size:16px;color:var(--ink);border-top:1px solid var(--border);padding-top:12px;margin-top:6px}
+.checkout-cta{display:block;width:100%;background:var(--ink);color:#fff;border:none;padding:15px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;text-align:center;text-decoration:none;font-family:inherit;transition:background .2s}
+.checkout-cta:hover{background:var(--red)}
+.security-note{font-size:12px;color:rgba(26,14,6,.4);text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:4px}
+
+/* cross-sell */
+.cross-sell{margin-top:32px;padding-top:24px;border-top:1px solid var(--border)}
+.cross-title{font-size:13px;font-weight:600;margin-bottom:14px;color:rgba(26,14,6,.55)}
+.cross-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit}
+.cross-item:last-child{border-bottom:none}
+.cross-img{width:40px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.cross-info{flex:1}
+.cross-name{font-size:13px;font-weight:600}
+.cross-price{font-size:12px;color:rgba(26,14,6,.5)}
+.cross-add{background:var(--cream);border:1px solid var(--border);border-radius:100px;font-size:11px;font-weight:600;padding:5px 10px;cursor:pointer;font-family:inherit;flex-shrink:0;transition:all .2s}
+.cross-add:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+footer{background:var(--ink);color:rgba(255,255,255,.4)}
+.f-inner{max-width:1100px;margin:0 auto;padding:36px 28px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.f-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff}
+.f-logo em{color:var(--gold);font-style:italic}
+
+@media(max-width:720px){
+  .cart-page{grid-template-columns:1fr}
+  .summary-box{position:static;order:-1}
+  nav{display:none}
+}
+  </style>
+</head>
+<body>
+<header>
+  <div class="h-inner">
+    <a href="index.html" class="logo">No <em>Marks</em> Left</a>
+    <nav><a href="index.html">Shop</a></nav>
+    <a href="cart.html" class="cart-btn">🛒 Cart <span class="cart-count" id="cart-count">0</span></a>
+  </div>
+</header>
+
+<div class="ship-progress">
+  <div class="ship-inner">
+    <div class="ship-msg" id="ship-msg"></div>
+    <div class="ship-bar"><div class="ship-fill" id="ship-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="cart-page">
+  <h1>Your cart</h1>
+  <div class="cart-sub" id="cart-sub"></div>
+  <div class="items-col" id="items-col"></div>
+  <div class="summary-box" id="summary-box" style="display:none">
+    <h2>Order summary</h2>
+    <div class="sum-row"><span>Subtotal</span><span id="sub-amt"></span></div>
+    <div class="sum-row"><span>Shipping</span><span id="ship-amt"></span></div>
+    <div class="sum-row total"><span>Total</span><span id="total-amt"></span></div>
+    <a href="checkout.html" class="checkout-cta">Checkout →</a>
+    <div class="security-note">🔒 Secure checkout · ₹499 free shipping</div>
+    <div class="cross-sell">
+      <div class="cross-title">Readers also added</div>
+      <div id="cross-items"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="f-inner">
+    <div class="f-logo">No <em>Marks</em> Left</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.4)">© 2025 No Marks Left · Made in India</div>
+  </div>
+</footer>
+
+<script>
+const PRODUCTS={
+  1:{name:'my roman empire',price:299,emoji:'🏛️',cls:'pi1'},
+  2:{name:'down bad for a fictional man',price:329,emoji:'🌹',cls:'pi2'},
+  3:{name:'the author is unwell (5 stars)',price:349,emoji:'✒️',cls:'pi3'},
+  4:{name:'one more chapter (the lie)',price:279,emoji:'🕯️',cls:'pi4'},
+  5:{name:'I was normal before this',price:349,emoji:'📑',cls:'pi5'},
+  6:{name:'they had valid points actually',price:329,emoji:'🌑',cls:'pi6'},
+};
+const FREE_SHIP=499;
+var _pvFired=false;
+
+function getCart(){try{return JSON.parse(localStorage.getItem('nml_cart')||'[]')}catch{return[]}}
+function saveCart(c){localStorage.setItem('nml_cart',JSON.stringify(c))}
+
+function render(){
+  const cart=getCart();
+  const sub=cart.reduce((a,i)=>a+i.price*i.qty,0);
+  const ship=sub>=FREE_SHIP?0:80;
+  const total=sub+ship;
+
+  // badge
+  document.querySelectorAll('.cart-count').forEach(el=>el.textContent=cart.reduce((a,i)=>a+i.qty,0));
+  if(!_pvFired){_pvFired=true;nml.track('page_view',{page:'cart',cart_value:sub,item_count:cart.length});}
+
+  // shipping bar
+  const pct=Math.min(100,Math.round(sub/FREE_SHIP*100));
+  document.getElementById('ship-fill').style.width=pct+'%';
+  const shipMsg=document.getElementById('ship-msg');
+  if(sub>=FREE_SHIP){
+    shipMsg.innerHTML='🎉 <span>You\'ve got <strong>free shipping!</strong> go you.</span>';
+  } else {
+    const left=FREE_SHIP-sub;
+    shipMsg.innerHTML=`🚚 <span>Add <strong>₹${left}</strong> more for free shipping.</span>`;
+  }
+
+  // cart sub copy
+  const subEl=document.getElementById('cart-sub');
+  if(cart.length===0){subEl.textContent='';}
+  else{
+    const lines=['your selections. impeccable taste.','your picks. no notes.','you know what you want. we respect that.'];
+    subEl.textContent=lines[cart.length%3];
+  }
+
+  // items
+  const col=document.getElementById('items-col');
+  const sumBox=document.getElementById('summary-box');
+  if(!cart.length){
+    col.innerHTML=`
+      <div class="empty-state">
+        <div class="empty-emoji">📖</div>
+        <div class="empty-title">your cart is reading on its own.</div>
+        <div class="empty-sub">Nothing here yet. Go find your protagonist.</div>
+        <a href="index.html" class="empty-cta">Shop the collection →</a>
+      </div>`;
+    sumBox.style.display='none';
+    return;
+  }
+  col.innerHTML=cart.map((item,i)=>`
+    <div class="cart-item">
+      <div class="item-img ${item.cls}">${item.emoji}</div>
+      <div class="item-info">
+        <div class="item-name">${item.name}</div>
+        <div class="item-variant">${item.size}</div>
+        <div class="item-price">₹${item.price*item.qty}</div>
+        <button class="item-remove" onclick="removeItem(${i})">Remove</button>
+      </div>
+      <div class="item-qty">
+        <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+        <span class="qty-n">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+      </div>
+    </div>`).join('');
+
+  // summary
+  document.getElementById('sub-amt').textContent='₹'+sub;
+  document.getElementById('ship-amt').textContent=ship?'₹'+ship:'Free 🎉';
+  document.getElementById('total-amt').textContent='₹'+total;
+  sumBox.style.display='block';
+
+  // cross-sell: show products not in cart
+  const inCart=new Set(cart.map(i=>parseInt(i.id)));
+  const suggestions=Object.entries(PRODUCTS).filter(([id])=>!inCart.has(parseInt(id))).slice(0,3);
+  document.getElementById('cross-items').innerHTML=suggestions.map(([id,p])=>`
+    <div class="cross-item">
+      <div class="cross-img ${p.cls}">${p.emoji}</div>
+      <div class="cross-info">
+        <div class="cross-name">${p.name}</div>
+        <div class="cross-price">₹${p.price}</div>
+      </div>
+      <button class="cross-add" onclick="crossAdd(${id})">+ Add</button>
+    </div>`).join('');
+}
+
+function removeItem(i){const c=getCart();nml.track('cart_item_removed',{product_id:c[i].id,product_name:c[i].name,price:c[i].price});c.splice(i,1);saveCart(c);render()}
+function changeQty(i,d){const c=getCart();c[i].qty=Math.max(1,c[i].qty+d);saveCart(c);render()}
+function crossAdd(id){
+  const p=PRODUCTS[id];const cart=getCart();const key=id+'-4 bookmarks';
+  const ex=cart.find(i=>i.key===key);
+  if(ex)ex.qty++;else cart.push({key,id,name:p.name,price:p.price,emoji:p.emoji,cls:p.cls,size:'4 bookmarks',qty:1});
+  nml.track('cross_sell_added',{product_id:parseInt(id),product_name:p.name,price:p.price});
+  saveCart(cart);render();
+}
+render();
+document.querySelector('.checkout-cta').addEventListener('click',function(){
+  const c=getCart(),s=c.reduce((a,i)=>a+i.price*i.qty,0);
+  nml.track('checkout_started',{cart_value:s+(s>=FREE_SHIP?0:80),item_count:c.length});
+});
+</script>
+</body>
+</html>
