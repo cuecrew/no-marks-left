@@ -31,9 +31,11 @@ try {
     api_host: 'https://us.i.posthog.com',
     capture_pageview: false,
     capture_pageleave: true,
+    /* Mask every input in session replays. Our privacy policy promises that
+       nothing typed into a field — card details included — is visible in a
+       recording, so this must stay true. */
     session_recording: {
-      maskAllInputs: false,
-      maskInputOptions: { password: true, creditCard: true }
+      maskAllInputs: true
     }
   });
 } catch(e) {}

@@ -1,0 +1,70 @@
+/* Shared styling for the policy pages (privacy, terms, refunds). */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a0e06;--cream:#f5ecd5;--paper:#fdf8ef;--deep:#2a1508;
+  --red:#8b1a1a;--gold:#c8913a;--border:rgba(26,14,6,.1);--w:760px;
+}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.5}
+
+header{position:sticky;top:0;z-index:200;background:var(--paper);border-bottom:1px solid var(--border)}
+.h-inner{max-width:1160px;margin:0 auto;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.logo{font-family:'Playfair Display',serif;font-size:21px;font-weight:900;color:var(--ink);text-decoration:none;letter-spacing:-.5px}
+.logo em{color:var(--red);font-style:italic}
+nav{display:flex;gap:28px}
+nav a{font-size:13px;font-weight:500;color:var(--ink);text-decoration:none;opacity:.5;transition:opacity .15s}
+nav a:hover{opacity:1}
+.cart-btn{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);background:var(--cream);border:1px solid var(--border);padding:8px 16px;border-radius:100px}
+.cart-count{background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+
+/* ── page shell ── */
+.legal-hero{background:var(--ink);padding:52px 28px 44px}
+.legal-hero-inner{max-width:var(--w);margin:0 auto}
+.legal-eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--gold);margin-bottom:14px}
+.legal-hero h1{font-family:'Playfair Display',serif;font-size:clamp(30px,4.6vw,46px);font-weight:900;color:#fff;line-height:1.08;margin-bottom:12px}
+.legal-updated{font-size:13px;color:rgba(255,255,255,.42)}
+
+.legal-body{max-width:var(--w);margin:0 auto;padding:44px 28px 80px}
+.legal-intro{font-size:16px;line-height:1.8;color:rgba(26,14,6,.7);padding-bottom:26px;margin-bottom:8px;border-bottom:1px solid var(--border)}
+
+.legal-body h2{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;margin:34px 0 12px;line-height:1.25}
+.legal-body h3{font-size:14px;font-weight:700;margin:22px 0 8px;letter-spacing:.2px}
+.legal-body p{font-size:14.5px;line-height:1.8;color:rgba(26,14,6,.72);margin-bottom:12px}
+.legal-body ul{margin:0 0 14px 20px}
+.legal-body li{font-size:14.5px;line-height:1.75;color:rgba(26,14,6,.72);margin-bottom:7px}
+.legal-body a{color:var(--red);text-decoration:underline;text-underline-offset:2px}
+.legal-body strong{color:var(--ink)}
+
+/* callout for the important bits */
+.legal-note{background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:16px 18px;margin:18px 0}
+.legal-note p{margin-bottom:0;font-size:14px}
+.legal-note p+p{margin-top:9px}
+
+/* contact / grievance block */
+.legal-contact{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-top:18px}
+.legal-contact-row{font-size:14px;line-height:1.85;color:rgba(26,14,6,.72)}
+.legal-contact-row strong{display:inline-block;min-width:132px;color:var(--ink)}
+
+/* table for the data-collection summary */
+.legal-table{width:100%;border-collapse:collapse;margin:14px 0 18px;font-size:13.5px}
+.legal-table th,.legal-table td{text-align:left;padding:10px 12px;border:1px solid var(--border);vertical-align:top;line-height:1.65}
+.legal-table th{background:var(--cream);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.legal-table td{color:rgba(26,14,6,.72)}
+
+/* unfilled business details — replace before going live */
+.todo{background:#fff3cd;color:#7a5c00;border:1px dashed #d9a900;border-radius:4px;padding:1px 6px;font-weight:600;font-size:.92em;white-space:nowrap}
+
+footer{background:var(--ink);color:rgba(255,255,255,.4)}
+.f-inner{max-width:1160px;margin:0 auto;padding:36px 28px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.f-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff}
+.f-logo em{color:var(--gold);font-style:italic}
+.f-links{display:flex;gap:20px;flex-wrap:wrap}
+.f-links a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+.f-links a:hover{color:#fff}
+.f-copy{font-size:12px}
+
+@media(max-width:600px){
+  nav{display:none}
+  .f-inner{flex-direction:column;text-align:center}
+  .legal-contact-row strong{display:block;min-width:0}
+  .legal-table th,.legal-table td{padding:8px 9px}
+}

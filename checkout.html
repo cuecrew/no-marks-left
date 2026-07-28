@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Checkout — No Marks Left</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-  <script src="analytics.js?v=2"></script>
+  <script src="analytics.js?v=3"></script>
   <script src="interactions.js?v=2"></script>
   <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -98,6 +98,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.4);margin-top:80px}
 .f-inner{max-width:var(--w);margin:0 auto;padding:32px 28px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .f-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff}
 .f-logo em{color:var(--gold);font-style:italic}
+.f-links{display:flex;gap:20px;flex-wrap:wrap}
+.f-links a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+.f-links a:hover{color:#fff}
+/* policy consent line above the pay button — required for checkout flows */
+.pay-consent{font-size:12px;line-height:1.7;color:rgba(26,14,6,.5);text-align:center;margin-top:12px}
+.pay-consent a{color:var(--red);text-decoration:underline;text-underline-offset:2px}
 
 @media(max-width:720px){
   .checkout-wrap{grid-template-columns:1fr}
@@ -192,6 +198,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.4);margin-top:80px}
       <div class="spinner" id="spinner"></div>
     </button>
 
+    <p class="pay-consent">By placing this order you agree to our <a href="terms.html">Terms of Service</a>,
+      <a href="privacy.html">Privacy Policy</a> and <a href="refunds.html">Shipping &amp; Refunds Policy</a>.</p>
+
     <!-- THE FAKE DOOR: payment error -->
     <div class="pay-error" id="pay-error">
       <div class="pay-err-head">
@@ -228,7 +237,14 @@ footer{background:var(--ink);color:rgba(255,255,255,.4);margin-top:80px}
 <footer>
   <div class="f-inner">
     <div class="f-logo">No <em>Marks</em> Left</div>
-    <div style="font-size:12px">© 2025 No Marks Left · hello@nomarksleft.com</div>
+    <div class="f-links">
+      <a href="index.html">Shop</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="refunds.html">Shipping &amp; Refunds</a>
+      <a href="mailto:hello@nomarksleft.com">Contact</a>
+    </div>
+    <div style="font-size:12px">© 2026 No Marks Left · hello@nomarksleft.com</div>
   </div>
 </footer>
 
