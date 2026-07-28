@@ -120,7 +120,7 @@ function bounceBadge() {
 
 // ── Wire to ATC buttons (capture phase fires before onclick) ──────────────────
 document.addEventListener('click', function(e) {
-  var btn = e.target.closest('.pcard-atc, .atc-btn, .cross-add');
+  var btn = e.target.closest('.pcard-atc, .atc-btn, .cross-add, .gb-add');
   if (!btn) return;
   playSnap();
   shatterFrom(btn);

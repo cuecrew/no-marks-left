@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Product — No Marks Left</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-  <script src="analytics.js?v=3"></script>
-  <script src="interactions.js?v=2"></script>
+  <script src="analytics.js?v=4"></script>
+  <script src="interactions.js?v=3"></script>
   <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--ink:#1a0e06;--cream:#f5ecd5;--paper:#fdf8ef;--deep:#2a1508;--red:#8b1a1a;--gold:#c8913a;--pop:#d94f2b;--sage:#3d5c32;--border:rgba(26,14,6,.1);--w:1100px}
@@ -237,7 +237,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
 
 <script>
 const PRODUCTS={
-  1:{name:'my roman empire',bmname:'my roman<br/>empire',flavor:'Dark Chocolate 70%',price:299,emoji:'🏛️',cls:'pi1',badge:'living rent free',tagline:'for the book that never left',
+  1:{name:'my roman empire',bmname:'my roman<br/>empire',flavor:'Dark Chocolate 70%',price:349,emoji:'🏛️',cls:'pi1',badge:'living rent free',tagline:'for the book that never left',
     desc:'Rich, snappy 70% dark chocolate. For the book that moved into your head three years ago and hasn\'t paid rent once. No explanations. No apologies. You think about it constantly and that is completely normal.',
     notes:['70% single-origin dark chocolate, no dairy','Food-safe edible ink, no artificial colours','Snappy tempered finish, slight bitter edge','4 bookmarks per pack, fresh per order'],
     pairs:['The Night Circus','Piranesi','The Secret History','The Goldfinch'],
@@ -245,7 +245,7 @@ const PRODUCTS={
       {stars:5,text:'"bought this for the book that destroyed me in 2022. ate it while rereading. still not over it. this chocolate gets it."',handle:'@perma.brainworm · BookTok'},
       {stars:5,text:'"the bitter edge is exactly right. rich, intense, stays with you — like that one chapter I\'ve thought about every day for 3 years."',handle:'@dark.academia.forever · Instagram'},
     ]},
-  2:{name:'down bad for a fictional man',bmname:'down bad for<br/>a fictional man',flavor:'Rose & Strawberry White Choc',price:329,emoji:'🌹',cls:'pi2',badge:'romantasy girlie',tagline:'he\'s not real. he\'s better.',
+  2:{name:'down bad for a fictional man',bmname:'down bad for<br/>a fictional man',flavor:'Rose & Strawberry White Choc',price:379,emoji:'🌹',cls:'pi2',badge:'romantasy girlie',tagline:'he\'s not real. he\'s better.',
     desc:'White chocolate with real rose water and dried strawberry. Sweet, slightly irrational, completely correct. For the reader who has permanently outsourced their standards to people who don\'t exist and has zero regrets.',
     notes:['Real rose water, dried strawberry pieces','Belgian white chocolate base','Food-safe edible ink, no artificial colours','4 bookmarks per pack, fresh per order'],
     pairs:['A Court of Thorns and Roses','Fourth Wing','The Cruel Prince','Six of Crows'],
@@ -253,7 +253,7 @@ const PRODUCTS={
       {stars:5,text:'"he is fictional and he is still the standard. this chocolate understands. 10/10 would ruin my life again."',handle:'@romantasy.rotting · BookTok'},
       {stars:5,text:'"the rose is subtle and perfect. like my taste in men who don\'t exist. sent 4 as gifts. we\'re all fine."',handle:'@delulu.girlie · Instagram'},
     ]},
-  3:{name:'the author is unwell (5 stars)',bmname:'the author<br/>is unwell<br/>(5 ★)',flavor:'Black Sesame Dark Choc',price:349,emoji:'✒️',cls:'pi3',badge:'booktok certified',tagline:'not a complaint. a review.',
+  3:{name:'the author is unwell (5 stars)',bmname:'the author<br/>is unwell<br/>(5 ★)',flavor:'Black Sesame Dark Choc',price:399,emoji:'✒️',cls:'pi3',badge:'booktok certified',tagline:'not a complaint. a review.',
     desc:'Dark chocolate with black sesame paste — complex, earthy, slightly unhinged. For the book that should not have been written, was written anyway, and you rated it 5 stars without hesitation. The author is unwell. So are you now. Welcome.',
     notes:['Black sesame paste, 65% dark chocolate','Earthy, nutty, genuinely complex flavour','Food-safe edible ink, no artificial colours','4 bookmarks per pack, fresh per order'],
     pairs:['The Atlas Six','Babel','The Poppy War','Ninth House'],
@@ -261,7 +261,7 @@ const PRODUCTS={
       {stars:5,text:'"complex and a little unhinged. exactly like every book I rate 5 stars. the author is unwell and I mean that as the highest compliment."',handle:'@booktok.unhinged · BookTok'},
       {stars:5,text:'"the black sesame makes it interesting and slightly chaotic. like the author decided to go feral at chapter 22 and I loved every page."',handle:'@book.chaos.agent · Instagram'},
     ]},
-  4:{name:'one more chapter (the lie)',bmname:'one more<br/>chapter<br/>(the lie)',flavor:'Salted Caramel Milk Choc',price:279,emoji:'🕯️',cls:'pi4',badge:'most relatable',tagline:'I said this at 11pm. it is now 4am.',
+  4:{name:'one more chapter (the lie)',bmname:'one more<br/>chapter<br/>(the lie)',flavor:'Salted Caramel Milk Choc',price:349,emoji:'🕯️',cls:'pi4',badge:'most relatable',tagline:'I said this at 11pm. it is now 4am.',
     desc:'Buttery milk chocolate with a ribbon of sea-salted caramel. The most comforting lie in reader culture. You said one more chapter at 11pm. It is now 4am. You have no regrets. This chocolate is complicit.',
     notes:['Sea salt and caramel, milk chocolate base','Warm, buttery, irresistible — by design','Food-safe edible ink, no artificial colours','4 bookmarks per pack, fresh per order'],
     pairs:['The House in the Cerulean Sea','Tomorrow and Tomorrow and Tomorrow','Happy Place','Beach Read'],
@@ -269,7 +269,7 @@ const PRODUCTS={
       {stars:5,text:'"ate it at 2am after the chapter I swore would be the last. it was not the last. ate another bookmark. still no regrets."',handle:'@one.more.chapter.lie · BookTok'},
       {stars:5,text:'"salted caramel is always the right call. as is one more chapter. both beautiful lies I tell myself regularly."',handle:'@comfort.read.era · Instagram'},
     ]},
-  5:{name:'I was normal before this',bmname:'I was normal<br/>before this',flavor:'Matcha & White Choc',price:349,emoji:'📑',cls:'pi5',badge:'personality changed',tagline:'blame the author, not me.',
+  5:{name:'I was normal before this',bmname:'I was normal<br/>before this',flavor:'Matcha & White Choc',price:399,emoji:'📑',cls:'pi5',badge:'personality changed',tagline:'blame the author, not me.',
     desc:'Ceremonial matcha through white chocolate — grounding, slightly earthy, quietly chaotic. For the book that rewired your brain, made rainbow annotation tabs a personality trait, and permanently changed how you exist in the world.',
     notes:['Ceremonial grade matcha powder','Belgian white chocolate base','Food-safe edible ink, no artificial colours','4 bookmarks per pack, fresh per order'],
     pairs:['Lessons in Chemistry','The Secret History','Remarkably Bright Creatures','Yellowface'],
@@ -277,7 +277,7 @@ const PRODUCTS={
       {stars:5,text:'"before this book: normal person. after: 47 tabs, 3 annotation colours, strong opinions. 5 stars. blame the author."',handle:'@normal.no.more · BookTok'},
       {stars:5,text:'"the matcha is genuinely good — not fake-sweet. like a book that actually earns its hype. I have not recovered from either."',handle:'@tab.hoarder · Instagram'},
     ]},
-  6:{name:'they had valid points actually',bmname:'they had<br/>valid points<br/>actually',flavor:'Dark Chocolate + Sea Salt',price:329,emoji:'🌑',cls:'pi6',badge:'morally grey',tagline:'complex. dark. correct.',
+  6:{name:'they had valid points actually',bmname:'they had<br/>valid points<br/>actually',flavor:'Dark Chocolate + Sea Salt',price:379,emoji:'🌑',cls:'pi6',badge:'morally grey',tagline:'complex. dark. correct.',
     desc:'Dark chocolate with flaky sea salt — sharp contrast, complex finish. For the villain you understood. For the character everyone else called the antagonist and you called \'kind of right, actually\'. No notes. Only feelings.',
     notes:['65% dark chocolate, flaky sea salt finish','Sharp contrast, lingers with complexity','Food-safe edible ink, no artificial colours','4 bookmarks per pack, fresh per order'],
     pairs:['Six of Crows','Shadow and Bone','The Gilded Wolves','An Ember in the Ashes'],

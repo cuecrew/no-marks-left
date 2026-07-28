@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>No Marks Left — Edible Bookmarks</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-  <script src="analytics.js?v=3"></script>
-  <script src="interactions.js?v=2"></script>
+  <script src="analytics.js?v=4"></script>
+  <script src="interactions.js?v=3"></script>
   <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -78,6 +78,22 @@ nav a:hover{opacity:1}
 .s-inner{max-width:var(--w);margin:0 auto}
 .s-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--red);margin-bottom:10px}
 .s-title{font-family:'Playfair Display',serif;font-size:clamp(30px,4vw,52px);font-weight:900;line-height:1.1;margin-bottom:44px}
+
+/* ── gift box (the AOV play — sits above the grid) ── */
+.giftbox{background:var(--ink);border-radius:16px;padding:30px 34px;margin-bottom:16px;display:grid;grid-template-columns:1fr auto;gap:34px;align-items:center;position:relative;overflow:hidden}
+.giftbox::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 80% at 88% 50%,rgba(200,145,58,.16) 0%,transparent 70%);pointer-events:none}
+.gb-main{position:relative;z-index:2}
+.gb-badge{display:inline-block;background:var(--gold);color:var(--ink);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;padding:4px 10px;border-radius:100px;margin-bottom:12px}
+.gb-title{font-family:'Playfair Display',serif;font-size:29px;font-weight:900;color:#fff;line-height:1.1;margin-bottom:9px}
+.gb-desc{font-size:14px;line-height:1.7;color:rgba(255,255,255,.55);max-width:430px;margin-bottom:14px}
+.gb-flavours{display:flex;gap:8px;flex-wrap:wrap}
+.gb-chip{font-size:11px;color:rgba(255,255,255,.6);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:5px 11px}
+.gb-side{position:relative;z-index:2;text-align:right;flex-shrink:0}
+.gb-price{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;color:#fff;line-height:1}
+.gb-unit{font-size:11px;color:rgba(255,255,255,.4);margin-top:4px;margin-bottom:14px}
+.gb-add{background:var(--pop);color:#fff;border:none;padding:13px 26px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .15s,box-shadow .2s;white-space:nowrap}
+.gb-add:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(217,79,43,.42)}
+.gb-ship{font-size:11px;color:var(--gold);margin-top:10px;font-weight:600}
 
 /* ── product grid ── */
 .products{background:var(--paper)}
@@ -170,6 +186,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
   .hcard{min-height:88px;padding:16px 18px}
   .hcard-em{font-size:62px;right:10px}
   .hcard-name{font-size:17px}
+  .giftbox{grid-template-columns:1fr;gap:22px;padding:24px 22px}
+  .gb-side{text-align:left}
+  .gb-add{width:100%}
   .pgrid{grid-template-columns:repeat(2,1fr)}
   .vgrid,.rgrid{grid-template-columns:1fr}
   .vcard{border-right:none}.vcard:last-child{border-top:none}
@@ -252,6 +271,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
   <div class="s-inner">
     <div class="s-label">the collection</div>
     <div class="s-title">pick your protagonist.</div>
+    <div class="giftbox" id="giftbox"></div>
     <div class="pgrid" id="pgrid"></div>
   </div>
 </section>
@@ -337,12 +357,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
 
 <script>
 const PRODUCTS={
-  1:{name:'my roman empire',bmname:'my roman<br/>empire',flavor:'Dark Chocolate 70%',price:299,emoji:'🏛️',cls:'pi1',badge:'living rent free',desc:'For the book that moved into your head three years ago and never paid rent.'},
-  2:{name:'down bad for a fictional man',bmname:'down bad for<br/>a fictional man',flavor:'Rose & Strawberry White Choc',price:329,emoji:'🌹',cls:'pi2',badge:'romantasy girlie',desc:'He\'s not real. He\'s better. This chocolate understands.'},
-  3:{name:'the author is unwell (5 stars)',bmname:'the author<br/>is unwell<br/>(5 ★)',flavor:'Black Sesame Dark Choc',price:349,emoji:'✒️',cls:'pi3',badge:'booktok certified',desc:'Not a complaint. A review. Complex, unhinged, and completely correct.'},
-  4:{name:'one more chapter (the lie)',bmname:'one more<br/>chapter<br/>(the lie)',flavor:'Salted Caramel Milk Choc',price:279,emoji:'🕯️',cls:'pi4',badge:'most relatable',desc:'I said this at 11pm. It is now 4am. This chocolate is complicit.'},
-  5:{name:'I was normal before this',bmname:'I was normal<br/>before this',flavor:'Matcha & White Choc',price:349,emoji:'📑',cls:'pi5',badge:'personality changed',desc:'For the book that rewired your brain. Rainbow tabs sold separately.'},
-  6:{name:'they had valid points actually',bmname:'they had<br/>valid points<br/>actually',flavor:'Dark Chocolate + Sea Salt',price:329,emoji:'🌑',cls:'pi6',badge:'morally grey',desc:'Complex. Sharp. For the villain you understood. No notes, only feelings.'},
+  1:{name:'my roman empire',bmname:'my roman<br/>empire',flavor:'Dark Chocolate 70%',price:349,emoji:'🏛️',cls:'pi1',badge:'living rent free',desc:'For the book that moved into your head three years ago and never paid rent.'},
+  2:{name:'down bad for a fictional man',bmname:'down bad for<br/>a fictional man',flavor:'Rose & Strawberry White Choc',price:379,emoji:'🌹',cls:'pi2',badge:'romantasy girlie',desc:'He\'s not real. He\'s better. This chocolate understands.'},
+  3:{name:'the author is unwell (5 stars)',bmname:'the author<br/>is unwell<br/>(5 ★)',flavor:'Black Sesame Dark Choc',price:399,emoji:'✒️',cls:'pi3',badge:'booktok certified',desc:'Not a complaint. A review. Complex, unhinged, and completely correct.'},
+  4:{name:'one more chapter (the lie)',bmname:'one more<br/>chapter<br/>(the lie)',flavor:'Salted Caramel Milk Choc',price:349,emoji:'🕯️',cls:'pi4',badge:'most relatable',desc:'I said this at 11pm. It is now 4am. This chocolate is complicit.'},
+  5:{name:'I was normal before this',bmname:'I was normal<br/>before this',flavor:'Matcha & White Choc',price:399,emoji:'📑',cls:'pi5',badge:'personality changed',desc:'For the book that rewired your brain. Rainbow tabs sold separately.'},
+  6:{name:'they had valid points actually',bmname:'they had<br/>valid points<br/>actually',flavor:'Dark Chocolate + Sea Salt',price:379,emoji:'🌑',cls:'pi6',badge:'morally grey',desc:'Complex. Sharp. For the villain you understood. No notes, only feelings.'},
 };
 function trackProductClick(id){nml.track('product_card_click',{product_id:parseInt(id),product_name:PRODUCTS[id].name,price:PRODUCTS[id].price});}
 
@@ -364,6 +384,42 @@ document.getElementById('hero-cards').innerHTML=IN_STOCK.map(id=>{const p=PRODUC
     <div class="hcard-price">₹${p.price}</div>
   </a>`}).join('');
 document.getElementById('hero-cards-note').textContent=`${IN_STOCK.length} flavours ready now · ${COMING_SOON.length} more coming soon`;
+
+/* The gift box is the higher-AOV SKU. It contains 2 bookmarks of each
+   IN_STOCK flavour, so it can never promise a flavour we cannot make. */
+const GIFT_BOX={
+  id:'gift',
+  name:'The Gift Box',
+  price:799,
+  emoji:'🎁',
+  cls:'pi1',
+  size:`${IN_STOCK.length} flavours · ${IN_STOCK.length*2} bookmarks`,
+};
+document.getElementById('giftbox').innerHTML=`
+  <div class="gb-main">
+    <div class="gb-badge">for gifting</div>
+    <div class="gb-title">${GIFT_BOX.name}</div>
+    <p class="gb-desc">Every flavour we make, two bookmarks each, in a printed keepsake box with a card you can write on. For the friend who will not stop texting you about a book.</p>
+    <div class="gb-flavours">${IN_STOCK.map(id=>`<span class="gb-chip">${PRODUCTS[id].emoji} ${PRODUCTS[id].name}</span>`).join('')}</div>
+  </div>
+  <div class="gb-side">
+    <div class="gb-price">₹${GIFT_BOX.price}</div>
+    <div class="gb-unit">${IN_STOCK.length*2} bookmarks · ₹${Math.round(GIFT_BOX.price/(IN_STOCK.length*2))} each</div>
+    <button class="gb-add" onclick="addGiftBox()">Add gift box</button>
+    <div class="gb-ship">✓ Ships free</div>
+  </div>`;
+
+function addGiftBox(){
+  const cart=getCart(),key='gift-box';
+  const ex=cart.find(i=>i.key===key);
+  if(ex)ex.qty++;
+  else cart.push({key,id:GIFT_BOX.id,name:GIFT_BOX.name,price:GIFT_BOX.price,emoji:GIFT_BOX.emoji,cls:GIFT_BOX.cls,size:GIFT_BOX.size,qty:1});
+  saveCart(cart);updateBadge();
+  nml.track('add_to_cart',{product_id:'gift',product_name:GIFT_BOX.name,price:GIFT_BOX.price,sku_type:'gift_box'});
+  const btn=document.querySelector('.gb-add');
+  btn.textContent='✓ Added';
+  setTimeout(()=>{btn.textContent='Add gift box'},1600);
+}
 
 const pgrid=document.getElementById('pgrid');
 pgrid.innerHTML=GRID_ORDER.map(id=>{const p=PRODUCTS[id];return `
@@ -393,7 +449,7 @@ function quickAdd(e,id){
   const ex=cart.find(i=>i.key===key);
   if(ex)ex.qty++;else cart.push({key,id,name:p.name,price:p.price,emoji:p.emoji,cls:p.cls,size:'4 bookmarks',qty:1});
   saveCart(cart);updateBadge();
-  nml.track('quick_add_to_cart',{product_id:parseInt(id),product_name:p.name,price:p.price});
+  nml.track('quick_add_to_cart',{product_id:parseInt(id),product_name:p.name,price:p.price,sku_type:'flavour_pack'});
   const btn=e.currentTarget;btn.textContent='✓';btn.style.background='#3d5c32';
   setTimeout(()=>{btn.textContent='+ cart';btn.style.background=''},1600);
 }
