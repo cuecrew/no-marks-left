@@ -80,13 +80,15 @@ nav a:hover{opacity:1}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .pcard{text-decoration:none;color:inherit;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .25s}
 .pcard:hover{transform:translateY(-5px);box-shadow:0 14px 44px rgba(26,14,6,.11)}
-.pcard-img{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;position:relative;background:var(--cream);border-bottom:1px solid var(--border);overflow:hidden}
-.pcard-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 28% 72%,rgba(200,145,58,.08) 0%,transparent 55%),radial-gradient(circle at 72% 22%,rgba(139,26,26,.05) 0%,transparent 50%)}
+.pcard-img{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;position:relative;background:#fff;overflow:hidden}
+.pcard-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 28% 72%,rgba(200,145,58,.06) 0%,transparent 55%),radial-gradient(circle at 72% 22%,rgba(139,26,26,.04) 0%,transparent 50%)}
 .pcard-badge{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:3px 8px;border-radius:100px;z-index:3}
 .bm-wrap{width:52%;filter:drop-shadow(0 6px 20px rgba(0,0,0,.32));position:relative;z-index:2}
+.bm-wrap:has(.bm.has-photo){width:82%;filter:none}
 .bm{clip-path:polygon(0 0,100% 0,100% 87%,50% 100%,0 87%);aspect-ratio:1/2.5;display:flex;flex-direction:column;align-items:center;padding-top:17%;position:relative;overflow:hidden}
+.bm.has-photo{clip-path:none;aspect-ratio:3/4;padding-top:0;overflow:visible}
 .bm::after{content:'';position:absolute;top:0;left:0;right:52%;bottom:36%;background:linear-gradient(130deg,rgba(255,255,255,.22) 0%,transparent 65%);z-index:1;pointer-events:none}
-.bm-photo{display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;border-radius:0}
+.bm-photo{display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:1;border-radius:0;filter:drop-shadow(0 6px 20px rgba(0,0,0,.28))}
 .bm.has-photo .bm-photo{display:block}
 .bm.has-photo .bm-em,.bm.has-photo .bm-nm{display:none}
 .bm.has-photo::after{display:none}
