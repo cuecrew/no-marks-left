@@ -37,6 +37,9 @@ nav a:hover{opacity:1}
 .prod-bm.has-photo .prod-bm-photo{display:block}
 .prod-bm.has-photo .prod-bm-em,.prod-bm.has-photo .prod-bm-nm{display:none}
 .prod-bm.has-photo::after{display:none}
+.prod-bm.img-missing .prod-bm-em{opacity:.2;transform:translateY(-8px)}
+.prod-bm.img-missing .prod-bm-nm{display:none}
+.prod-bm.img-missing::before{content:'coming soon';position:absolute;bottom:22%;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.25);padding:4px 10px;border-radius:100px;white-space:nowrap;z-index:4}
 .prod-bm-em{font-size:72px;position:relative;z-index:2}
 .prod-bm-nm{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:rgba(255,255,255,.9);text-align:center;line-height:1.35;margin-top:8px;position:relative;z-index:2;padding:0 10%}
 .prod-badge{position:absolute;top:18px;left:18px;background:var(--red);color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:5px 10px;border-radius:100px}
@@ -289,7 +292,7 @@ const imgEl=document.getElementById('prod-img');
 imgEl.className='prod-img';
 const bmWrap=document.createElement('div');
 bmWrap.className='prod-bm-wrap';
-bmWrap.innerHTML=`<div class="prod-bm ${p.cls}"><img src="img/bm-${id}.jpg" class="prod-bm-photo" alt="${p.name}" onload="this.parentNode.classList.add('has-photo')"/><span class="prod-bm-em">${p.emoji}</span><div class="prod-bm-nm">${p.bmname}</div></div>`;
+bmWrap.innerHTML=`<div class="prod-bm ${p.cls}"><img src="img/bm-${id}.jpg" class="prod-bm-photo" alt="${p.name}" onload="this.parentNode.classList.add('has-photo')" onerror="this.parentNode.classList.add('img-missing')"/><span class="prod-bm-em">${p.emoji}</span><div class="prod-bm-nm">${p.bmname}</div></div>`;
 imgEl.appendChild(bmWrap);
 
 // pack size pills — update price display

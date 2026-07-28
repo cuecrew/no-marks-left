@@ -90,6 +90,9 @@ nav a:hover{opacity:1}
 .bm.has-photo .bm-photo{display:block}
 .bm.has-photo .bm-em,.bm.has-photo .bm-nm{display:none}
 .bm.has-photo::after{display:none}
+.bm.img-missing .bm-em{opacity:.2;transform:translateY(-6px)}
+.bm.img-missing .bm-nm{display:none}
+.bm.img-missing::before{content:'coming soon';position:absolute;bottom:22%;left:50%;transform:translateX(-50%);font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.25);padding:3px 8px;border-radius:100px;white-space:nowrap;z-index:4}
 .bm-em{font-size:clamp(24px,3vw,40px);position:relative;z-index:2}
 .bm-nm{font-family:'Playfair Display',serif;font-size:clamp(7px,1vw,10px);font-weight:700;color:rgba(255,255,255,.85);text-align:center;line-height:1.3;margin-top:5px;position:relative;z-index:2;padding:0 8%}
 .pi1{background:linear-gradient(150deg,#1a0808,#6b1a1a)}
@@ -336,7 +339,7 @@ pgrid.innerHTML=Object.entries(PRODUCTS).map(([id,p])=>`
   <a href="product.html?id=${id}" class="pcard" onclick="trackProductClick(${id})">
     <div class="pcard-img">
       <div class="pcard-badge">${p.badge}</div>
-      <div class="bm-wrap"><div class="bm ${p.cls}"><img src="img/bm-${id}.jpg" class="bm-photo" alt="${p.name}" onload="this.parentNode.classList.add('has-photo')"/><span class="bm-em">${p.emoji}</span><div class="bm-nm">${p.bmname}</div></div></div>
+      <div class="bm-wrap"><div class="bm ${p.cls}"><img src="img/bm-${id}.jpg" class="bm-photo" alt="${p.name}" onload="this.parentNode.classList.add('has-photo')" onerror="this.parentNode.classList.add('img-missing')"/><span class="bm-em">${p.emoji}</span><div class="bm-nm">${p.bmname}</div></div></div>
     </div>
     <div class="pcard-body">
       <div class="pcard-label">${p.badge}</div>
