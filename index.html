@@ -51,17 +51,21 @@ nav a:hover{opacity:1}
 .btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,.7)}
 
 /* hero product cards */
-.hero-cards{padding:60px 60px 60px 0;position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:center}
-.hcard{border-radius:14px;padding:18px 14px 14px;display:flex;flex-direction:column;justify-content:flex-end;height:190px;text-decoration:none;position:relative;overflow:hidden;transition:transform .2s}
-.hcard:hover{transform:scale(1.025)}
-.hcard-em{font-size:46px;position:absolute;top:50%;left:50%;transform:translate(-50%,-65%)}
-.hcard.shift{margin-top:28px}
-.hcard-name{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:#fff;line-height:1.25;margin-bottom:2px}
-.hcard-price{font-size:11px;color:rgba(255,255,255,.55)}
+.hero-cards-col{padding:60px 60px 60px 0;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center}
+.hero-cards{display:flex;flex-direction:column;gap:10px}
+.hcard{border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:18px;min-height:104px;text-decoration:none;position:relative;overflow:hidden;transition:transform .2s,box-shadow .25s}
+.hcard:hover{transform:translateX(5px);box-shadow:0 12px 34px rgba(0,0,0,.32)}
+/* the emoji becomes an oversized watermark instead of a lone floating icon */
+.hcard-em{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:82px;line-height:1;opacity:.13;pointer-events:none}
+.hcard-main{flex:1;min-width:0;position:relative;z-index:2}
+.hcard-badge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.3px;color:rgba(255,255,255,.45);margin-bottom:6px}
+.hcard-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;line-height:1.14;margin-bottom:5px}
+.hcard-flavor{font-size:11.5px;color:rgba(255,255,255,.5);font-style:italic}
+.hcard-price{font-size:16px;font-weight:700;color:#fff;flex-shrink:0;position:relative;z-index:2}
+.hero-cards-note{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.6px;color:rgba(255,255,255,.3);margin-top:14px;text-align:center}
 .hc1{background:linear-gradient(150deg,#3a1010 0%,#7d2222 100%)}
-.hc2{background:linear-gradient(150deg,#260e2a 0%,#6e2a78 100%)}
-.hc3{background:linear-gradient(150deg,#0e1c0e 0%,#2d5228 100%)}
 .hc4{background:linear-gradient(150deg,#2a160a 0%,#7a4018 100%)}
+.hc5{background:linear-gradient(150deg,#16161a 0%,#3b3b48 100%)}
 
 /* ── trust strip ── */
 .trust-strip{background:var(--cream);border-bottom:1px solid var(--border)}
@@ -84,11 +88,12 @@ nav a:hover{opacity:1}
 .pcard-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 28% 72%,rgba(200,145,58,.06) 0%,transparent 55%),radial-gradient(circle at 72% 22%,rgba(139,26,26,.04) 0%,transparent 50%)}
 .pcard-badge{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:3px 8px;border-radius:100px;z-index:3}
 .bm-wrap{width:52%;filter:drop-shadow(0 6px 20px rgba(0,0,0,.32));position:relative;z-index:2}
-.bm-wrap:has(.bm.has-photo){width:82%;filter:none}
+/* photos are pre-cropped to 3/4 — let them fill the frame edge to edge */
+.bm-wrap:has(.bm.has-photo){width:100%;filter:none}
 .bm{clip-path:polygon(0 0,100% 0,100% 87%,50% 100%,0 87%);aspect-ratio:1/2.5;display:flex;flex-direction:column;align-items:center;padding-top:17%;position:relative;overflow:hidden}
-.bm.has-photo{clip-path:none;aspect-ratio:3/4;padding-top:0;overflow:visible}
+.bm.has-photo{clip-path:none;aspect-ratio:3/4;padding-top:0;background:none}
 .bm::after{content:'';position:absolute;top:0;left:0;right:52%;bottom:36%;background:linear-gradient(130deg,rgba(255,255,255,.22) 0%,transparent 65%);z-index:1;pointer-events:none}
-.bm-photo{display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:1;border-radius:0;filter:drop-shadow(0 6px 20px rgba(0,0,0,.28))}
+.bm-photo{display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
 .bm.has-photo .bm-photo{display:block}
 .bm.has-photo .bm-em,.bm.has-photo .bm-nm{display:none}
 .bm.has-photo::after{display:none}
@@ -160,8 +165,11 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
 @media(max-width:960px){
   .hero{grid-template-columns:1fr}
   .hero-text{padding:64px 28px 32px}
-  .hero-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 28px 56px}
-  .hcard{min-height:140px}.hcard.shift{margin-top:16px}
+  .hero-cards-col{padding:0 28px 56px}
+  .hero-cards{gap:8px}
+  .hcard{min-height:88px;padding:16px 18px}
+  .hcard-em{font-size:62px;right:10px}
+  .hcard-name{font-size:17px}
   .pgrid{grid-template-columns:repeat(2,1fr)}
   .vgrid,.rgrid{grid-template-columns:1fr}
   .vcard{border-right:none}.vcard:last-child{border-top:none}
@@ -222,11 +230,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
       <a href="about.html" class="btn-ghost">our story →</a>
     </div>
   </div>
-  <div class="hero-cards">
-    <a href="product.html?id=1" class="hcard hc1"><div class="hcard-em">🏛️</div><div><div class="hcard-name">my roman<br/>empire</div><div class="hcard-price">₹299</div></div></a>
-    <a href="product.html?id=4" class="hcard hc3 shift"><div class="hcard-em">🕯️</div><div><div class="hcard-name">one more<br/>chapter</div><div class="hcard-price">₹279</div></div></a>
-    <a href="product.html?id=6" class="hcard hc2"><div class="hcard-em">🌑</div><div><div class="hcard-name">they had<br/>valid points</div><div class="hcard-price">₹329</div></div></a>
-    <a href="product.html?id=2" class="hcard hc4 shift"><div class="hcard-em">🌹</div><div><div class="hcard-name">down bad for<br/>a fictional man</div><div class="hcard-price">₹329</div></div></a>
+  <div class="hero-cards-col">
+    <div class="hero-cards" id="hero-cards"></div>
+    <div class="hero-cards-note" id="hero-cards-note"></div>
   </div>
 </section>
 
@@ -336,8 +342,28 @@ const PRODUCTS={
   6:{name:'they had valid points actually',bmname:'they had<br/>valid points<br/>actually',flavor:'Dark Chocolate + Sea Salt',price:329,emoji:'🌑',cls:'pi6',badge:'morally grey',desc:'Complex. Sharp. For the villain you understood. No notes, only feelings.'},
 };
 function trackProductClick(id){nml.track('product_card_click',{product_id:parseInt(id),product_name:PRODUCTS[id].name,price:PRODUCTS[id].price});}
+
+// Single source of truth for what we can actually show. IN_STOCK have real
+// photography and lead the grid; COMING_SOON fill the second row (3-col grid).
+const IN_STOCK=[1,4,6];
+const COMING_SOON=[2,3,5];
+const GRID_ORDER=[...IN_STOCK,...COMING_SOON];
+const HERO_CLS={1:'hc1',4:'hc4',6:'hc5'};
+
+document.getElementById('hero-cards').innerHTML=IN_STOCK.map(id=>{const p=PRODUCTS[id];return `
+  <a href="product.html?id=${id}" class="hcard ${HERO_CLS[id]}" onclick="trackProductClick(${id})">
+    <span class="hcard-em">${p.emoji}</span>
+    <div class="hcard-main">
+      <div class="hcard-badge">${p.badge}</div>
+      <div class="hcard-name">${p.name}</div>
+      <div class="hcard-flavor">${p.flavor}</div>
+    </div>
+    <div class="hcard-price">₹${p.price}</div>
+  </a>`}).join('');
+document.getElementById('hero-cards-note').textContent=`${IN_STOCK.length} flavours ready now · ${COMING_SOON.length} more coming soon`;
+
 const pgrid=document.getElementById('pgrid');
-pgrid.innerHTML=Object.entries(PRODUCTS).map(([id,p])=>`
+pgrid.innerHTML=GRID_ORDER.map(id=>{const p=PRODUCTS[id];return `
   <a href="product.html?id=${id}" class="pcard" onclick="trackProductClick(${id})">
     <div class="pcard-img">
       <div class="pcard-badge">${p.badge}</div>
@@ -352,7 +378,7 @@ pgrid.innerHTML=Object.entries(PRODUCTS).map(([id,p])=>`
         <button class="pcard-atc" onclick="quickAdd(event,${id})">+ cart</button>
       </div>
     </div>
-  </a>`).join('');
+  </a>`}).join('');
 
 function getCart(){try{return JSON.parse(localStorage.getItem('nml_cart')||'[]')}catch{return[]}}
 function saveCart(c){localStorage.setItem('nml_cart',JSON.stringify(c))}
