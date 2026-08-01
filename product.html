@@ -431,6 +431,7 @@ function renderNotifyMe(){
 }
 
 const FORMSPREE_ID='xgogdddq';
+const IS_LOCAL=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 async function submitNotify(e){
   e.preventDefault();
   const email=document.getElementById('notify-email-p').value;
@@ -441,11 +442,14 @@ async function submitNotify(e){
   const btn=document.querySelector('.notify-btn-p');
   btn.textContent='Saving…';btn.disabled=true;
   try{
-    await fetch('https://formspree.io/f/'+FORMSPREE_ID,{
-      method:'POST',
-      body:JSON.stringify({email,source:'coming-soon-'+id,flavour:p.name}),
-      headers:{'Content-Type':'application/json','Accept':'application/json'}
-    });
+    // Skipped locally so dev runs never land a junk signup in the real inbox.
+    if(!IS_LOCAL){
+      await fetch('https://formspree.io/f/'+FORMSPREE_ID,{
+        method:'POST',
+        body:JSON.stringify({email,source:'coming-soon-'+id,flavour:p.name}),
+        headers:{'Content-Type':'application/json','Accept':'application/json'}
+      });
+    }
   }catch(err){}
   document.querySelector('.notify-form').style.display='none';
   document.getElementById('notify-ok-p').style.display='block';

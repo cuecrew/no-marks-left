@@ -1019,6 +1019,7 @@
 
     // capture email — just the form id, the URL is built below
     const FORMSPREE_ID = 'xgogdddq';
+    const IS_LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
       async function submitNotify() {
         const email = document.getElementById('notify-email').value;
         if (!email) return;
@@ -1028,12 +1029,17 @@
         const btn = document.querySelector('.notify-btn');
         btn.textContent = 'Saving…'; btn.disabled = true;
         try {
-          if (FORMSPREE_ID) {
+          /* Never POST to the live waitlist from local testing — otherwise
+             every dev run lands a junk signup in the real inbox and pollutes
+             the only conversion metric that matters. */
+          if (FORMSPREE_ID && !IS_LOCAL) {
             await fetch('https://formspree.io/f/' + FORMSPREE_ID, {
               method: 'POST',
               body: JSON.stringify({ email, source: 'checkout-payment-error', sub, cart_size: cart.length }),
               headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
             });
+          } else if (IS_LOCAL && window.console) {
+            console.info('[nml] local run — skipped Formspree POST for', email);
           }
         } catch (e) { }
         document.getElementById('notify-success').style.display = 'block';
