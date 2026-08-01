@@ -287,7 +287,7 @@ optional. Notable decisions:
 
 - The testimonials are illustrative, not real customer reviews, and should be
   removed or relabelled before any paid traffic.
-- `cuecrew@gmail.com` is not yet a live inbox.
+- `vijan.cuecrew@gmail.com` is not yet a live inbox.
 
 ---
 
