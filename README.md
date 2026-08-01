@@ -160,11 +160,17 @@ dataset.
 **Intent / diagnostics:** `product_clicked` · `product_impression` ·
 `section_viewed` · `coming_soon_clicked` · `coming_soon_viewed` ·
 `notify_me_shown` · `notify_me_submitted` · `pack_size_selected` · `qty_changed` ·
-`cart_qty_changed` · `cart_item_removed` · `payment_method_selected` ·
-`checkout_step_completed` · `checkout_payment_reached` · `checkout_abandoned` ·
-`fake_door_shown` · `scroll_depth` (25/50/75/100) · `hero_cta_click` ·
-`about_cta_click` · `nav_click` · `footer_link_click` · `outbound_click` ·
-`email_signup`
+`cart_qty_changed` · `cart_item_removed` · `proceed_to_payment` ·
+`payment_method_selected` · `checkout_step_completed` · `checkout_payment_reached` ·
+`checkout_abandoned` · `fake_door_shown` · `scroll_depth` (25/50/75/100) ·
+`hero_cta_click` · `about_cta_click` · `nav_click` · `footer_link_click` ·
+`outbound_click` · `email_signup`
+
+Checkout is deliberately two-step: the email is captured first, then a
+**Proceed to payment** button reveals the payment methods. `proceed_to_payment` sits
+between `checkout_started` and `payment_method_selected` and isolates the drop-off
+between "gave contact details" and "chose how to pay" — the two are otherwise
+indistinguishable in the funnel.
 
 **Person properties:** `max_funnel_stage` · `has_attempted_payment` ·
 `is_waitlisted` · `intent_cart_value` · `intent_sku_types` ·
@@ -273,8 +279,23 @@ optional. Notable decisions:
   banking, wallet, COD) — which is what real Indian checkouts show first anyway —
   and no card field exists anywhere on the site. This *added* signal:
   `payment_method_selected` reveals whether the audience is UPI-first or COD-first.
+- **Removed the shipping address form.** Name, street, city, PIN, state and phone
+  were being collected under a stated purpose — "to deliver an order" — that cannot
+  occur, which undermines consent validity under the DPDP Act 2023 regardless of the
+  fields never being read by any code. Checkout now collects an email and a payment
+  method, nothing else.
+- **Deleted the fabricated social proof.** A "4.9 from 2,400+ readers" rating and
+  three testimonials attributed to named handles with follower counts. Under the
+  Consumer Protection Act 2019 and the CCPA's 2022 guidelines those are misleading
+  advertisements, and liability attaches to individuals — being unregistered is not a
+  shield. The separate argument that mattered more: social proof is a strong
+  conversion lever, so fake reviews would have inflated the exact intent rate the
+  experiment exists to measure.
 - **`session_recording.maskAllInputs: true`.** The privacy policy promises nothing
   typed into a field is visible in a replay, so it has to actually be true.
+- **Security headers** via `vercel.json` — CSP with `frame-ancestors 'none'`,
+  `X-Content-Type-Options`, `Referrer-Policy` (the default was leaking full
+  UTM-tagged URLs to PostHog and Formspree), and `Permissions-Policy`.
 - **Privacy, Terms and Shipping/Refunds pages**, linked from every footer plus a
   consent line above the pay button. Written to describe what this site genuinely
   does — the real processors, real retention periods, DPDP Act 2023 rights.
@@ -285,9 +306,19 @@ optional. Notable decisions:
 
 ### Still open
 
-- The testimonials are illustrative, not real customer reviews, and should be
-  removed or relabelled before any paid traffic.
-- `vijan.cuecrew@gmail.com` is not yet a live inbox.
+- **"AS SEEN ON BOOKTOK"** remains in the homepage ticker. Same category as the
+  testimonials that were deleted — a factual claim about coverage that has not
+  happened. One `<span>`, appearing twice.
+- **The payment-error copy** says the payment processor is experiencing high load,
+  which invents a specific false fact about a third party. "Payments aren't live yet"
+  converts identically without asserting anything untrue.
+- **PostHog authorized URLs and bot filtering** are not configured, and the
+  **Formspree endpoint has no captcha or domain restriction**. Both IDs are public in
+  client-side JS by necessity, so anyone can inject events or POST junk signups and
+  poison the one metric that decides whether this gets built.
+- **No consent banner.** Analytics and session replay start on page load. Fine for
+  India-first traffic given the privacy policy discloses both, but prior consent is
+  required for EU/UK visitors, which Reddit will bring some of.
 
 ---
 
