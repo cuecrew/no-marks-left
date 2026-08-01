@@ -1,64 +1,148 @@
 # Canonical campaign links
 
-Every link pointing at this site from anywhere else **must** come from this file.
+Every link pointing at this site from anywhere else **must** be copied from this
+file. If it is not in here, do not post it.
 
-Two rules, both learned the hard way:
+Three rules, all of which cost real data when broken:
 
 - **Lowercase always.** `Reddit` and `reddit` become two separate rows in PostHog and
-  silently split your numbers in half.
+  split one channel's numbers in half.
 - **Never tag internal links.** Only tag links that point *at* the site from
-  elsewhere. UTMs on your own nav links corrupt attribution.
-
-An untagged link is a channel you cannot evaluate. If it is not in this file, do not
-post it.
+  somewhere else. UTMs on your own nav links corrupt attribution.
+- **An untagged link is a channel you cannot evaluate.** It lands as `$direct` and
+  becomes unattributable forever.
 
 Base URL: `https://edible-bookmarks.vercel.app/`
 
+## The scheme
+
+| Param | Means | Values in use |
+|---|---|---|
+| `utm_source` | The platform | `instagram` · `reddit` · `discord` · `whatsapp` · `goodreads` · `print` |
+| `utm_medium` | How it behaves, so like-for-like groups together | `social` (public, algorithmic) · `messaging` (direct, high-trust) · `cpc` (paid) · `qr` (offline) |
+| `utm_campaign` | Which wave | `launch_aug26` |
+| `utm_content` | The specific placement inside that channel | `bookstan` · `bio` · `story` · … |
+
+Campaign is the **wave**, content is the **placement**. That way you can read
+performance by channel *and* by individual placement without inventing a new campaign
+name every time you post.
+
 ---
 
-## Reddit
+## 1. Instagram
 
-Book communities — the real target audience. Check each subreddit's self-promotion
-rules before posting; most book subs remove store links.
+```
+https://edible-bookmarks.vercel.app/?utm_source=instagram&utm_medium=social&utm_campaign=launch_aug26&utm_content=bio
+```
+```
+https://edible-bookmarks.vercel.app/?utm_source=instagram&utm_medium=social&utm_campaign=launch_aug26&utm_content=story
+```
+```
+https://edible-bookmarks.vercel.app/?utm_source=instagram&utm_medium=social&utm_campaign=launch_aug26&utm_content=reel
+```
 
-| Where | Link |
-|---|---|
-| r/bookstan | `https://edible-bookmarks.vercel.app/?utm_source=reddit&utm_medium=social&utm_campaign=bookstan_aug26` |
-| r/bookstan (in a comment, not the post body) | `https://edible-bookmarks.vercel.app/?utm_source=reddit&utm_medium=social&utm_campaign=bookstan_aug26&utm_content=comment` |
-| r/romancebooks | `https://edible-bookmarks.vercel.app/?utm_source=reddit&utm_medium=social&utm_campaign=romancebooks_aug26` |
-| r/IndianBooks | `https://edible-bookmarks.vercel.app/?utm_source=reddit&utm_medium=social&utm_campaign=indianbooks_aug26` |
+## 2. Reddit
 
-Maker / startup subs. These convert badly because the audience is builders, not
-readers — **tag them separately so they do not pollute the demand read.**
+Swap `utm_content` for whichever subreddit. Check each sub's self-promotion rules
+first — most book subs remove store links.
 
-| Where | Link |
-|---|---|
-| r/SideProject | `https://edible-bookmarks.vercel.app/?utm_source=reddit&utm_medium=social&utm_campaign=sideproject_aug26` |
-| r/IndianStartups | `https://edible-bookmarks.vercel.app/?utm_source=reddit&utm_medium=social&utm_campaign=indianstartups_aug26` |
+```
+https://edible-bookmarks.vercel.app/?utm_source=reddit&utm_medium=social&utm_campaign=launch_aug26&utm_content=bookstan
+```
+```
+https://edible-bookmarks.vercel.app/?utm_source=reddit&utm_medium=social&utm_campaign=launch_aug26&utm_content=romancebooks
+```
+```
+https://edible-bookmarks.vercel.app/?utm_source=reddit&utm_medium=social&utm_campaign=launch_aug26&utm_content=indianbooks
+```
 
-## Instagram
+Maker/startup subs — high traffic, near-zero intent, because the audience is builders
+not readers. Tagged apart so they do not dilute the demand read.
 
-| Where | Link |
-|---|---|
-| Bio link | `https://edible-bookmarks.vercel.app/?utm_source=instagram&utm_medium=social&utm_campaign=bio` |
-| Story | `https://edible-bookmarks.vercel.app/?utm_source=instagram&utm_medium=social&utm_campaign=story_aug26` |
+```
+https://edible-bookmarks.vercel.app/?utm_source=reddit&utm_medium=social&utm_campaign=launch_aug26&utm_content=sideproject
+```
 
-## Offline / partners
+## 3. Discord
 
-| Where | Link |
-|---|---|
-| Cubbon Reads QR card | `https://edible-bookmarks.vercel.app/?utm_source=cubbon_reads&utm_medium=qr&utm_campaign=pilot` |
-| Bookstore insert card | `https://edible-bookmarks.vercel.app/?utm_source=bookstore&utm_medium=partner&utm_campaign=pilot` |
+```
+https://edible-bookmarks.vercel.app/?utm_source=discord&utm_medium=messaging&utm_campaign=launch_aug26
+```
+
+Per-server, so you can tell which community actually responded:
+
+```
+https://edible-bookmarks.vercel.app/?utm_source=discord&utm_medium=messaging&utm_campaign=launch_aug26&utm_content=<server_name>
+```
+
+## 4. WhatsApp
+
+```
+https://edible-bookmarks.vercel.app/?utm_source=whatsapp&utm_medium=messaging&utm_campaign=launch_aug26
+```
+
+Split broadcast from one-to-one — they convert very differently:
+
+```
+https://edible-bookmarks.vercel.app/?utm_source=whatsapp&utm_medium=messaging&utm_campaign=launch_aug26&utm_content=group
+```
+```
+https://edible-bookmarks.vercel.app/?utm_source=whatsapp&utm_medium=messaging&utm_campaign=launch_aug26&utm_content=dm
+```
+
+**Caveat:** WhatsApp strips referrer data, so without these tags the traffic is
+completely invisible. Tagging matters more here than anywhere else.
+
+## 5. Goodreads (paid)
+
+```
+https://edible-bookmarks.vercel.app/?utm_source=goodreads&utm_medium=cpc&utm_campaign=launch_aug26
+```
+
+`utm_medium=cpc` marks this as paid so it never gets averaged in with organic.
+
+**Verify the product still exists before planning around it** — I believe Goodreads
+retired its self-serve advertising platform, and authors were pushed to Amazon Ads
+instead. If so, use:
+
+```
+https://edible-bookmarks.vercel.app/?utm_source=amazon_ads&utm_medium=cpc&utm_campaign=launch_aug26
+```
+
+Either way: do not spend on this until organic has produced an intent rate. Paid
+without a known conversion rate is spending blind.
+
+## 6. Physical / print (QR codes)
+
+```
+https://edible-bookmarks.vercel.app/?utm_source=print&utm_medium=qr&utm_campaign=launch_aug26&utm_content=cubbon_reads
+```
+```
+https://edible-bookmarks.vercel.app/?utm_source=print&utm_medium=qr&utm_campaign=launch_aug26&utm_content=bookstore_card
+```
+```
+https://edible-bookmarks.vercel.app/?utm_source=print&utm_medium=qr&utm_campaign=launch_aug26&utm_content=litfest
+```
+
+**Two things about printed QR codes:**
+
+1. **Long URLs make dense, hard-to-scan codes.** Test any code you print from ~30cm
+   away, on a cheap phone, in bad light, before ordering a batch.
+2. **You cannot change a printed code.** Consider pointing it at a short path you
+   control that redirects with the UTMs attached — then the destination stays editable
+   after the cards are printed.
 
 ---
 
 ## Reading the results
 
-In PostHog, take the intent funnel and break it down by **`$initial_utm_campaign`**
-(not `utm_source` — every Reddit sub shares the same source, so source alone tells
-you "Reddit worked" without telling you *which* community worked).
+In PostHog, take the intent funnel and break it down by:
 
-The number that matters is intent rate per campaign:
+- **`$initial_utm_source`** → which platform works
+- **`$initial_utm_content`** → which specific placement or community works
+- **`$initial_utm_medium`** → whether `social`, `messaging`, `cpc` or `qr` behaves better as a class
+
+North star per segment:
 
 ```
 unique users with payment_attempted  ÷  unique users
@@ -66,5 +150,6 @@ unique users with payment_attempted  ÷  unique users
 
 Rough read: under 2% weak · 3–5% promising · above 5% real.
 
-Expect maker subs to show high traffic and near-zero intent. That is not a failure of
-the product, it is the wrong audience — which is exactly why they are tagged apart.
+Expect `messaging` (Discord, WhatsApp) to show **low volume but high intent** — those
+arrive with a personal recommendation attached. Expect maker subs to be the inverse.
+Judge each channel on intent rate, never on traffic.
