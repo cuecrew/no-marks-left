@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>No Marks Left — Edible Bookmarks</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-  <script src="analytics.js?v=5"></script>
+  <script src="analytics.js?v=6"></script>
   <script src="interactions.js?v=3"></script>
   <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -364,17 +364,39 @@ const PRODUCTS={
   5:{name:'I was normal before this',bmname:'I was normal<br/>before this',flavor:'Matcha & White Choc',price:399,emoji:'📑',cls:'pi5',badge:'personality changed',desc:'For the book that rewired your brain. Rainbow tabs sold separately.'},
   6:{name:'they had valid points actually',bmname:'they had<br/>valid points<br/>actually',flavor:'Dark Chocolate + Sea Salt',price:379,emoji:'🌑',cls:'pi6',badge:'morally grey',desc:'Complex. Sharp. For the villain you understood. No notes, only feelings.'},
 };
-function trackProductClick(id){nml.track('product_card_click',{product_id:parseInt(id),product_name:PRODUCTS[id].name,price:PRODUCTS[id].price});}
-
 // Single source of truth for what we can actually show. IN_STOCK have real
 // photography and lead the grid; COMING_SOON fill the second row (3-col grid).
 const IN_STOCK=[1,4,6];
 const COMING_SOON=[2,3,5];
+
+/* Clicking a coming-soon flavour is pure demand for something we cannot yet
+   make — it is the signal that decides which flavour to produce next, so it
+   is tagged separately rather than pooled with in-stock clicks. */
+function productMeta(id){
+  const p=PRODUCTS[id];
+  const available=IN_STOCK.indexOf(parseInt(id))>-1;
+  return {
+    product_id:parseInt(id),
+    product_name:p.name,
+    flavour:p.flavor,
+    price:p.price,
+    availability:available?'in_stock':'coming_soon',
+    is_available:available
+  };
+}
+function trackProductClick(id,surface){
+  const meta=productMeta(id);
+  nml.track('product_clicked',Object.assign({surface:surface||'grid'},meta));
+  if(!meta.is_available){
+    nml.track('coming_soon_clicked',meta);
+    nml.setPerson({viewed_coming_soon:true});
+  }
+}
 const GRID_ORDER=[...IN_STOCK,...COMING_SOON];
 const HERO_CLS={1:'hc1',4:'hc4',6:'hc5'};
 
 document.getElementById('hero-cards').innerHTML=IN_STOCK.map(id=>{const p=PRODUCTS[id];return `
-  <a href="product.html?id=${id}" class="hcard ${HERO_CLS[id]}" onclick="trackProductClick(${id})">
+  <a href="product.html?id=${id}" class="hcard ${HERO_CLS[id]}" onclick="trackProductClick(${id},'hero')">
     <span class="hcard-em">${p.emoji}</span>
     <div class="hcard-main">
       <div class="hcard-badge">${p.badge}</div>
@@ -415,7 +437,17 @@ function addGiftBox(){
   if(ex)ex.qty++;
   else cart.push({key,id:GIFT_BOX.id,name:GIFT_BOX.name,price:GIFT_BOX.price,emoji:GIFT_BOX.emoji,cls:GIFT_BOX.cls,size:GIFT_BOX.size,qty:1});
   saveCart(cart);updateBadge();
-  nml.track('add_to_cart',{product_id:'gift',product_name:GIFT_BOX.name,price:GIFT_BOX.price,sku_type:'gift_box'});
+  nml.track('add_to_cart',{
+    source:'gift_box_banner',
+    sku_type:'gift_box',
+    product_id:'gift',
+    product_name:GIFT_BOX.name,
+    price:GIFT_BOX.price,
+    qty:1,
+    availability:'in_stock',
+    cart_value:cartValue()
+  },'added_to_cart');
+  nml.setPerson({preferred_sku_type:'gift_box'});
   const btn=document.querySelector('.gb-add');
   btn.textContent='✓ Added';
   setTimeout(()=>{btn.textContent='Add gift box'},1600);
@@ -423,7 +455,7 @@ function addGiftBox(){
 
 const pgrid=document.getElementById('pgrid');
 pgrid.innerHTML=GRID_ORDER.map(id=>{const p=PRODUCTS[id];return `
-  <a href="product.html?id=${id}" class="pcard" onclick="trackProductClick(${id})">
+  <a href="product.html?id=${id}" class="pcard" data-product-id="${id}" onclick="trackProductClick(${id},'grid')">
     <div class="pcard-img">
       <div class="pcard-badge">${p.badge}</div>
       <div class="bm-wrap"><div class="bm ${p.cls}"><img src="img/bm-${id}.jpg" class="bm-photo" alt="${p.name}" onload="this.parentNode.classList.add('has-photo')" onerror="this.parentNode.classList.add('img-missing')"/><span class="bm-em">${p.emoji}</span><div class="bm-nm">${p.bmname}</div></div></div>
@@ -441,6 +473,7 @@ pgrid.innerHTML=GRID_ORDER.map(id=>{const p=PRODUCTS[id];return `
 
 function getCart(){try{return JSON.parse(localStorage.getItem('nml_cart')||'[]')}catch{return[]}}
 function saveCart(c){localStorage.setItem('nml_cart',JSON.stringify(c))}
+function cartValue(){return getCart().reduce((a,i)=>a+i.price*i.qty,0)}
 function updateBadge(){const n=getCart().reduce((a,i)=>a+i.qty,0);document.querySelectorAll('.cart-count').forEach(el=>el.textContent=n)}
 
 function quickAdd(e,id){
@@ -449,22 +482,45 @@ function quickAdd(e,id){
   const ex=cart.find(i=>i.key===key);
   if(ex)ex.qty++;else cart.push({key,id,name:p.name,price:p.price,emoji:p.emoji,cls:p.cls,size:'4 bookmarks',qty:1});
   saveCart(cart);updateBadge();
-  nml.track('quick_add_to_cart',{product_id:parseInt(id),product_name:p.name,price:p.price,sku_type:'flavour_pack'});
+  // Same canonical event as every other add path — only `source` differs.
+  nml.track('add_to_cart',Object.assign({
+    source:'grid',
+    sku_type:'flavour_pack',
+    pack_size:'4 bookmarks',
+    qty:1,
+    cart_value:cartValue()
+  },productMeta(id)),'added_to_cart');
+  nml.setPerson({preferred_sku_type:'flavour_pack'});
   const btn=e.currentTarget;btn.textContent='✓';btn.style.background='#3d5c32';
   setTimeout(()=>{btn.textContent='+ cart';btn.style.background=''},1600);
 }
 function emailSignup(e){
   e.preventDefault();
-  nml.track('email_signup',{source:'homepage'});
+  const email=document.getElementById('email-in').value;
+  nml.track('email_signup',{source:'homepage_footer'});
+  nml.identify(email);
+  nml.setPerson({is_newsletter_subscriber:true});
   document.getElementById('email-ok').style.display='block';
   e.target.style.display='none';
 }
+
 updateBadge();
-nml.track('page_view',{page:'home'});
+nml.page('home',{in_stock_count:IN_STOCK.length,coming_soon_count:COMING_SOON.length});
+nml.trackChrome();
+
 document.querySelector('.btn-pop').addEventListener('click',function(){nml.track('hero_cta_click',{cta:'shop_collection'});});
 document.querySelector('.btn-ghost').addEventListener('click',function(){nml.track('hero_cta_click',{cta:'our_story'});});
-var _sd={},_sh=document.body.scrollHeight;
-window.addEventListener('scroll',function(){var p=Math.round((window.scrollY+window.innerHeight)/_sh*100);[50,75,100].forEach(function(d){if(p>=d&&!_sd[d]){_sd[d]=1;nml.track('scroll_depth',{depth:d});}});},{passive:true});
+
+/* Impressions give every CTA a denominator. Without these, a low gift-box
+   add rate is indistinguishable from nobody scrolling far enough to see it. */
+nml.trackImpression(document.getElementById('giftbox'),'section_viewed',{section:'gift_box',price:GIFT_BOX.price});
+nml.trackImpression(document.getElementById('pgrid'),'section_viewed',{section:'product_grid'});
+nml.trackImpression(document.getElementById('vibes'),'section_viewed',{section:'vibes'});
+nml.trackImpression(document.getElementById('reviews'),'section_viewed',{section:'reviews'});
+nml.trackImpression(document.querySelector('.email-sec'),'section_viewed',{section:'email_capture'});
+document.querySelectorAll('.pcard').forEach(function(card){
+  nml.trackImpression(card,'product_impression',productMeta(card.dataset.productId));
+});
 </script>
 </body>
 </html>

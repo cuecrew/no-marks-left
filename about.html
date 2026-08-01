@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Our Story — No Marks Left</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-  <script src="analytics.js?v=5"></script>
+  <script src="analytics.js?v=6"></script>
   <script src="interactions.js?v=3"></script>
   <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -270,6 +270,18 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
 function getCart(){try{return JSON.parse(localStorage.getItem('nml_cart')||'[]')}catch{return[]}}
 function updateBadge(){const n=getCart().reduce((a,i)=>a+i.qty,0);document.querySelectorAll('.cart-count').forEach(el=>el.textContent=n)}
 updateBadge();
+
+/* Reading the brand story is a strong intent signal, so this page is
+   instrumented as carefully as the shop pages. */
+nml.page('about');
+nml.trackChrome();
+nml.trackImpression(document.querySelector('.ritual'),'section_viewed',{section:'the_ritual'});
+nml.trackImpression(document.querySelector('.why-grid'),'section_viewed',{section:'why_edible'});
+nml.trackImpression(document.querySelector('.craft'),'section_viewed',{section:'the_craft'});
+nml.trackImpression(document.querySelector('.about-cta'),'section_viewed',{section:'about_cta'});
+document.querySelector('.about-cta .btn-pop').addEventListener('click',function(){
+  nml.track('about_cta_click',{cta:'shop_collection'});
+});
 </script>
 </body>
 </html>

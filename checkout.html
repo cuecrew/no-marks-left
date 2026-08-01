@@ -8,7 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap"
     rel="stylesheet" />
-  <script src="analytics.js?v=5"></script>
+  <script src="analytics.js?v=6"></script>
   <script src="interactions.js?v=3"></script>
   <style>
     *,
@@ -784,7 +784,21 @@
     document.getElementById('sum-sub').textContent = '₹' + sub;
     document.getElementById('sum-ship').textContent = ship ? '₹' + ship : 'Free 🎉';
     document.getElementById('sum-total').textContent = '₹' + (sub + ship);
-    nml.track('page_view', { page: 'checkout', cart_value: sub + ship, item_count: cart.length });
+    /* Cart composition is stamped here and reused on every checkout event, so
+       payment_attempted can be sliced by SKU mix without a join. */
+    const CART_META = {
+      cart_value: sub + ship,
+      subtotal: sub,
+      shipping: ship,
+      item_count: cart.length,
+      unit_count: cart.reduce((a, i) => a + i.qty, 0),
+      has_gift_box: cart.some(i => i.id === 'gift'),
+      sku_types: [...new Set(cart.map(i => i.id === 'gift' ? 'gift_box' : 'flavour_pack'))].join(','),
+      products: cart.map(i => i.name).join(' | ')
+    };
+
+    nml.page('checkout', CART_META);
+    nml.trackChrome();
 
     // pre-fill notify email from contact field
     document.getElementById('email-field').addEventListener('blur', function () {
@@ -795,16 +809,50 @@
     function fmtCard(el) { let v = el.value.replace(/\D/g, '').substring(0, 16); el.value = v.replace(/(.{4})/g, '$1 ').trim() }
     function fmtExpiry(el) { let v = el.value.replace(/\D/g, ''); if (v.length >= 2) v = v.slice(0, 2) + ' / ' + v.slice(2, 4); el.value = v }
 
-    // step tracking for abandonment
+    /* Field-group progression. Records only WHICH group was completed, never
+       any value the visitor typed. This is what tells us where the checkout
+       leaks — the single most actionable diagnostic on this page. */
     var _lastStep = 'loaded';
-    document.getElementById('email-field').addEventListener('blur', function () { if (this.value) _lastStep = 'contact_filled'; });
+    var _stepsSeen = {};
+    var FIELD_GROUPS = [
+      { step: 'contact', selector: '#email-field' },
+      { step: 'shipping_name', selector: '.form-section:nth-of-type(2) input' },
+      { step: 'payment', selector: '#card-num' }
+    ];
+
+    function markStep(step) {
+      if (_stepsSeen[step]) return;
+      _stepsSeen[step] = true;
+      _lastStep = step;
+      nml.track('checkout_step_completed', Object.assign({ step: step }, CART_META));
+    }
+
+    document.getElementById('email-field').addEventListener('blur', function () {
+      if (this.value) markStep('contact');
+    });
+    document.querySelectorAll('.form-section')[1].querySelectorAll('input,select').forEach(function (el) {
+      el.addEventListener('blur', function () { if (this.value) markStep('shipping'); });
+    });
     document.getElementById('card-num').addEventListener('focus', function () {
       _lastStep = 'payment_reached';
-      nml.track('checkout_payment_reached', { cart_value: sub + ship });
+      markStep('payment_reached');
+      nml.track('checkout_payment_reached', CART_META);
     }, { once: true });
-    window.addEventListener('beforeunload', function () {
-      nml.track('checkout_abandoned', { last_step: _lastStep, cart_value: sub + ship });
-    });
+
+    /* beforeunload is unreliable on mobile; pagehide fires in more cases.
+       Guarded so an abandon is not double counted. */
+    var _abandonSent = false;
+    function sendAbandon() {
+      if (_abandonSent) return;
+      _abandonSent = true;
+      nml.track('checkout_abandoned', Object.assign({
+        last_step: _lastStep,
+        reached_payment: !!_stepsSeen['payment_reached'],
+        attempted_payment: !!window._paymentAttempted
+      }, CART_META));
+    }
+    window.addEventListener('pagehide', sendAbandon);
+    window.addEventListener('beforeunload', sendAbandon);
 
     // progress steps
     function setStep(n) {
@@ -827,7 +875,19 @@
       txt.textContent = 'Processing…';
       spin.style.display = 'block';
       setStep(3);
-      nml.track('payment_attempted', { cart_value: sub + ship, item_count: cart.length });
+      /* ── NORTH STAR ──────────────────────────────────────────────────
+         The count of people who tried to hand over money. This is the only
+         honest demand signal the fakedoor produces — everything else is a
+         leading indicator of it. */
+      window._paymentAttempted = true;
+      nml.track('payment_attempted', Object.assign({
+        attempt_number: (window._attemptCount = (window._attemptCount || 0) + 1)
+      }, CART_META), 'payment_attempted');
+      nml.setPerson({
+        has_attempted_payment: true,
+        intent_cart_value: CART_META.cart_value,
+        intent_sku_types: CART_META.sku_types
+      });
 
       setTimeout(() => {
         btn.disabled = false;
@@ -836,7 +896,7 @@
         const err = document.getElementById('pay-error');
         err.classList.add('show');
         err.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        nml.track('fake_door_shown', { cart_value: sub + ship });
+        nml.track('fake_door_shown', CART_META);
         const email = document.getElementById('email-field').value;
         if (email) document.getElementById('notify-email').value = email;
       }, 2800);
@@ -847,8 +907,9 @@
       async function submitNotify() {
         const email = document.getElementById('notify-email').value;
         if (!email) return;
-        nml.track('waitlist_email_submitted', { source: 'checkout-payment-error', cart_value: sub + ship, item_count: cart.length });
+        nml.track('waitlist_email_submitted', Object.assign({ source: 'checkout_payment_error' }, CART_META), 'waitlisted');
         nml.identify(email);
+        nml.setPerson({ is_waitlisted: true, waitlist_source: 'checkout_payment_error' });
         const btn = document.querySelector('.notify-btn');
         btn.textContent = 'Saving…'; btn.disabled = true;
         try {

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Cart — No Marks Left</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-  <script src="analytics.js?v=5"></script>
+  <script src="analytics.js?v=6"></script>
   <script src="interactions.js?v=3"></script>
   <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -169,7 +169,19 @@ function render(){
 
   // badge
   document.querySelectorAll('.cart-count').forEach(el=>el.textContent=cart.reduce((a,i)=>a+i.qty,0));
-  if(!_pvFired){_pvFired=true;nml.track('page_view',{page:'cart',cart_value:sub,item_count:cart.length});}
+  if(!_pvFired){
+    _pvFired=true;
+    nml.page('cart',{
+      cart_value:sub,
+      item_count:cart.length,
+      unit_count:cart.reduce((a,i)=>a+i.qty,0),
+      is_empty:cart.length===0,
+      has_gift_box:cart.some(i=>i.id==='gift'),
+      qualifies_free_shipping:sub>=FREE_SHIP
+    });
+    nml.trackChrome();
+    nml.setPerson({last_cart_value:sub});
+  }
 
   // shipping bar
   const pct=Math.min(100,Math.round(sub/FREE_SHIP*100));
@@ -240,19 +252,51 @@ function render(){
     </div>`).join('');
 }
 
-function removeItem(i){const c=getCart();nml.track('cart_item_removed',{product_id:c[i].id,product_name:c[i].name,price:c[i].price});c.splice(i,1);saveCart(c);render()}
-function changeQty(i,d){const c=getCart();c[i].qty=Math.max(1,c[i].qty+d);saveCart(c);render()}
+function removeItem(i){
+  const c=getCart();
+  nml.track('cart_item_removed',{product_id:c[i].id,product_name:c[i].name,price:c[i].price,qty:c[i].qty,sku_type:c[i].id==='gift'?'gift_box':'flavour_pack'});
+  c.splice(i,1);saveCart(c);render();
+}
+function changeQty(i,d){
+  const c=getCart();
+  const before=c[i].qty;
+  c[i].qty=Math.max(1,c[i].qty+d);
+  if(c[i].qty!==before){
+    nml.track('cart_qty_changed',{product_id:c[i].id,product_name:c[i].name,direction:d>0?'increase':'decrease',qty:c[i].qty});
+  }
+  saveCart(c);render();
+}
 function crossAdd(id){
   const p=PRODUCTS[id];const cart=getCart();const key=id+'-4 bookmarks';
   const ex=cart.find(i=>i.key===key);
   if(ex)ex.qty++;else cart.push({key,id,name:p.name,price:p.price,emoji:p.emoji,cls:p.cls,size:'4 bookmarks',qty:1});
-  nml.track('cross_sell_added',{product_id:parseInt(id),product_name:p.name,price:p.price});
-  saveCart(cart);render();
+  saveCart(cart);
+  // Canonical add_to_cart — cart cross-sell is a `source`, not its own event.
+  nml.track('add_to_cart',{
+    source:'cart_cross_sell',
+    sku_type:'flavour_pack',
+    product_id:parseInt(id),
+    product_name:p.name,
+    price:p.price,
+    pack_size:'4 bookmarks',
+    qty:1,
+    availability:'in_stock',
+    cart_value:cart.reduce((a,i)=>a+i.price*i.qty,0)
+  },'added_to_cart');
+  render();
 }
 render();
+nml.trackImpression(document.getElementById('cross-items'),'section_viewed',{section:'cart_cross_sell'});
 document.querySelector('.checkout-cta').addEventListener('click',function(){
   const c=getCart(),s=c.reduce((a,i)=>a+i.price*i.qty,0);
-  nml.track('checkout_started',{cart_value:s+(s>=FREE_SHIP?0:80),item_count:c.length});
+  nml.track('checkout_started',{
+    cart_value:s+(s>=FREE_SHIP?0:80),
+    subtotal:s,
+    item_count:c.length,
+    unit_count:c.reduce((a,i)=>a+i.qty,0),
+    has_gift_box:c.some(i=>i.id==='gift'),
+    sku_types:[...new Set(c.map(i=>i.id==='gift'?'gift_box':'flavour_pack'))].join(',')
+  },'checkout_started');
 });
 </script>
 </body>

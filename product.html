@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Product — No Marks Left</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-  <script src="analytics.js?v=5"></script>
+  <script src="analytics.js?v=6"></script>
   <script src="interactions.js?v=3"></script>
   <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -81,6 +81,16 @@ nav a:hover{opacity:1}
 .atc-btn{width:100%;background:var(--ink);color:#fff;border:none;padding:16px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s,transform .15s;margin-bottom:12px;margin-top:8px}
 .atc-btn:hover{background:var(--red);transform:translateY(-1px)}
 .atc-success{display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 16px;font-size:13px;font-weight:600;color:#166534;text-align:center;margin-bottom:12px}
+/* coming-soon email capture, replaces add-to-cart on unmade flavours */
+.notify-block{background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:20px 22px;margin:8px 0 16px}
+.notify-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;color:var(--red);margin-bottom:8px}
+.notify-copy{font-size:13.5px;line-height:1.7;color:rgba(26,14,6,.65);margin-bottom:14px}
+.notify-form{display:flex;gap:8px}
+.notify-input-p{flex:1;border:1.5px solid var(--border);border-radius:7px;padding:11px 14px;font-size:14px;font-family:inherit;outline:none;background:#fff;transition:border-color .2s}
+.notify-input-p:focus{border-color:var(--ink)}
+.notify-btn-p{background:var(--ink);color:#fff;border:none;padding:11px 20px;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .2s}
+.notify-btn-p:hover{background:var(--red)}
+.notify-ok{display:none;font-size:13px;font-weight:600;color:var(--red);margin-top:10px}
 .trust-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:28px}
 .t-item{font-size:12px;color:rgba(26,14,6,.48);display:flex;align-items:center;gap:4px}
 
@@ -351,13 +361,35 @@ document.getElementById('more-grid').innerHTML=moreIds.map(([oid,op])=>`
 // cart
 function getCart(){try{return JSON.parse(localStorage.getItem('nml_cart')||'[]')}catch{return[]}}
 function saveCart(c){localStorage.setItem('nml_cart',JSON.stringify(c))}
+function cartValue(){return getCart().reduce((a,i)=>a+i.price*i.qty,0)}
 function updateBadge(){const n=getCart().reduce((a,i)=>a+i.qty,0);document.querySelectorAll('.cart-count').forEach(el=>el.textContent=n)}
 updateBadge();
 
-nml.track('page_view',{page:'product',product_id:id,product_name:p.name,price:p.price});
+// Kept in sync with index.html — only these three have photography.
+const IN_STOCK=[1,4,6];
+const IS_AVAILABLE=IN_STOCK.indexOf(id)>-1;
+const META={
+  product_id:id,
+  product_name:p.name,
+  flavour:p.flavor,
+  price:p.price,
+  availability:IS_AVAILABLE?'in_stock':'coming_soon',
+  is_available:IS_AVAILABLE
+};
+
+nml.page('product',META);
+nml.track('product_viewed',META,'viewed_product');
+nml.trackChrome();
+nml.trackImpression(document.querySelector('.reviews-list'),'section_viewed',{section:'product_reviews'});
+nml.trackImpression(document.getElementById('more-grid'),'section_viewed',{section:'more_products'});
+if(!IS_AVAILABLE){
+  nml.track('coming_soon_viewed',META);
+  nml.setPerson({viewed_coming_soon:true});
+}
+
 let qty=1;
-function changeQty(d){qty=Math.max(1,qty+d);document.getElementById('qty-val').textContent=qty}
-function selectPill(el,group){el.closest('.opt-pills').querySelectorAll('.opt-pill').forEach(b=>b.classList.remove('active'));el.classList.add('active');nml.track('pack_size_selected',{product_id:id,product_name:p.name,pack_size:el.textContent.split(' — ')[0]});}
+function changeQty(d){qty=Math.max(1,qty+d);document.getElementById('qty-val').textContent=qty;nml.track('qty_changed',Object.assign({qty:qty},META));}
+function selectPill(el,group){el.closest('.opt-pills').querySelectorAll('.opt-pill').forEach(b=>b.classList.remove('active'));el.classList.add('active');nml.track('pack_size_selected',Object.assign({pack_size:el.textContent.split(' — ')[0]},META));}
 
 function addToCart(){
   const size=document.querySelector('.opt-pills .opt-pill.active').textContent.split(' — ')[0];
@@ -365,10 +397,60 @@ function addToCart(){
   const ex=cart.find(i=>i.key===key);
   if(ex)ex.qty+=qty;else cart.push({key,id,name:p.name,price:p.price,emoji:p.emoji,cls:p.cls,size,qty});
   saveCart(cart);updateBadge();
-  nml.track('add_to_cart',{product_id:id,product_name:p.name,pack_size:size,qty,price:p.price});
+  nml.track('add_to_cart',Object.assign({
+    source:'product_page',
+    sku_type:'flavour_pack',
+    pack_size:size,
+    qty:qty,
+    cart_value:cartValue()
+  },META),'added_to_cart');
+  nml.setPerson({preferred_sku_type:'flavour_pack'});
   const ok=document.getElementById('atc-ok');ok.style.display='block';
   setTimeout(()=>ok.style.display='none',3500);
 }
+
+/* Coming-soon flavours had no conversion mechanism at all — clicking one led
+   to a dead end, so half the catalogue produced no measurable demand. This
+   swaps the add-to-cart for an email capture on those pages. */
+function renderNotifyMe(){
+  if(IS_AVAILABLE)return;
+  const atc=document.querySelector('.atc-btn');
+  const optBlocks=document.querySelectorAll('.opt-block');
+  optBlocks.forEach(b=>b.style.display='none');
+  atc.outerHTML=`
+    <div class="notify-block">
+      <div class="notify-label">Not made yet — tell us to make it</div>
+      <p class="notify-copy">This flavour only gets produced if enough people ask. Leave your email and we will tell you the day it exists.</p>
+      <form class="notify-form" onsubmit="submitNotify(event)">
+        <input class="notify-input-p" type="email" id="notify-email-p" placeholder="you@example.com" required/>
+        <button class="notify-btn-p" type="submit">Notify me</button>
+      </form>
+      <div class="notify-ok" id="notify-ok-p">✓ Noted. You will hear from us first.</div>
+    </div>`;
+  nml.trackImpression(document.querySelector('.notify-block'),'notify_me_shown',META);
+}
+
+const FORMSPREE_ID='xgogdddq';
+async function submitNotify(e){
+  e.preventDefault();
+  const email=document.getElementById('notify-email-p').value;
+  if(!email)return;
+  nml.track('notify_me_submitted',Object.assign({source:'coming_soon_product_page'},META),'waitlisted');
+  nml.identify(email);
+  nml.setPerson({is_waitlisted:true,waitlist_flavour:p.name});
+  const btn=document.querySelector('.notify-btn-p');
+  btn.textContent='Saving…';btn.disabled=true;
+  try{
+    await fetch('https://formspree.io/f/'+FORMSPREE_ID,{
+      method:'POST',
+      body:JSON.stringify({email,source:'coming-soon-'+id,flavour:p.name}),
+      headers:{'Content-Type':'application/json','Accept':'application/json'}
+    });
+  }catch(err){}
+  document.querySelector('.notify-form').style.display='none';
+  document.getElementById('notify-ok-p').style.display='block';
+}
+renderNotifyMe();
 </script>
 </body>
 </html>
