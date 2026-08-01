@@ -224,21 +224,89 @@
       padding-right: 36px
     }
 
-    /* card logos */
-    .card-logos {
-      display: flex;
-      gap: 6px;
+    /* payment method selection — no card fields are collected at all */
+    .pay-intro {
+      font-size: 13px;
+      line-height: 1.65;
+      color: rgba(26, 14, 6, .5);
       margin-bottom: 14px
     }
 
-    .card-logo {
-      background: var(--cream);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 4px 8px;
-      font-size: 10px;
+    .pay-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .pay-method {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      padding: 13px 15px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color .18s, background .18s, transform .12s
+    }
+
+    .pay-method:hover {
+      border-color: rgba(26, 14, 6, .3);
+      transform: translateY(-1px)
+    }
+
+    .pay-method.selected {
+      border-color: var(--ink);
+      background: var(--cream)
+    }
+
+    .pm-icon {
+      font-size: 21px;
+      flex-shrink: 0;
+      line-height: 1
+    }
+
+    .pm-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      min-width: 0
+    }
+
+    .pm-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink)
+    }
+
+    .pm-sub {
+      font-size: 11.5px;
+      color: rgba(26, 14, 6, .45)
+    }
+
+    .pm-check {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      color: transparent;
+      font-size: 11px;
       font-weight: 700;
-      color: rgba(26, 14, 6, .5)
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .18s
+    }
+
+    .pay-method.selected .pm-check {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff
     }
 
     /* place order */
@@ -681,32 +749,55 @@
       </div>
 
       <div class="form-section">
-        <div class="form-section-title">Payment</div>
-        <div class="card-logos">
-          <span class="card-logo">VISA</span>
-          <span class="card-logo">MC</span>
-          <span class="card-logo">RUPAY</span>
-          <span class="card-logo">UPI</span>
-          <span class="card-logo">NETBKG</span>
-        </div>
-        <div class="form-row full">
-          <div class="form-group"><label class="form-label">Card number</label>
-            <input class="form-input" id="card-num" placeholder="1234 5678 9012 3456" maxlength="19"
-              oninput="fmtCard(this)" />
-          </div>
-        </div>
-        <div class="form-row three">
-          <div class="form-group"><label class="form-label">Name on card</label><input class="form-input"
-              placeholder="Arjun Sharma" /></div>
-          <div class="form-group"><label class="form-label">Expiry</label><input class="form-input"
-              placeholder="MM / YY" maxlength="7" oninput="fmtExpiry(this)" /></div>
-          <div class="form-group"><label class="form-label">CVV</label><input class="form-input" type="password"
-              placeholder="•••" maxlength="3" /></div>
+        <div class="form-section-title">Payment method</div>
+        <p class="pay-intro">Choose how you'd like to pay. You'll be taken to a secure page to
+          complete it — we never see or store your card or UPI details.</p>
+        <div class="pay-methods" id="pay-methods">
+          <button type="button" class="pay-method" data-method="upi">
+            <span class="pm-icon">🇮🇳</span>
+            <span class="pm-body">
+              <span class="pm-name">UPI</span>
+              <span class="pm-sub">GPay · PhonePe · Paytm · BHIM</span>
+            </span>
+            <span class="pm-check">✓</span>
+          </button>
+          <button type="button" class="pay-method" data-method="card">
+            <span class="pm-icon">💳</span>
+            <span class="pm-body">
+              <span class="pm-name">Credit / Debit card</span>
+              <span class="pm-sub">Visa · Mastercard · RuPay</span>
+            </span>
+            <span class="pm-check">✓</span>
+          </button>
+          <button type="button" class="pay-method" data-method="netbanking">
+            <span class="pm-icon">🏦</span>
+            <span class="pm-body">
+              <span class="pm-name">Net banking</span>
+              <span class="pm-sub">All major Indian banks</span>
+            </span>
+            <span class="pm-check">✓</span>
+          </button>
+          <button type="button" class="pay-method" data-method="wallet">
+            <span class="pm-icon">👛</span>
+            <span class="pm-body">
+              <span class="pm-name">Wallet</span>
+              <span class="pm-sub">Paytm · Amazon Pay · Mobikwik</span>
+            </span>
+            <span class="pm-check">✓</span>
+          </button>
+          <button type="button" class="pay-method" data-method="cod">
+            <span class="pm-icon">📦</span>
+            <span class="pm-body">
+              <span class="pm-name">Cash on delivery</span>
+              <span class="pm-sub">Pay the courier · ₹20 handling</span>
+            </span>
+            <span class="pm-check">✓</span>
+          </button>
         </div>
       </div>
 
-      <button class="place-btn" id="place-btn" onclick="placeOrder()">
-        <span id="btn-text">Place order</span>
+      <button class="place-btn" id="place-btn" onclick="placeOrder()" disabled>
+        <span id="btn-text">Select a payment method</span>
         <div class="spinner" id="spinner"></div>
       </button>
 
@@ -720,7 +811,7 @@
           <div class="pay-err-icon">⚠️</div>
           <div>
             <div class="pay-err-title">Payment didn't go through
-              <small>Your card has NOT been charged.</small>
+              <small>You have NOT been charged.</small>
             </div>
           </div>
         </div>
@@ -805,20 +896,11 @@
       if (this.value) document.getElementById('notify-email').value = this.value;
     });
 
-    // card formatting
-    function fmtCard(el) { let v = el.value.replace(/\D/g, '').substring(0, 16); el.value = v.replace(/(.{4})/g, '$1 ').trim() }
-    function fmtExpiry(el) { let v = el.value.replace(/\D/g, ''); if (v.length >= 2) v = v.slice(0, 2) + ' / ' + v.slice(2, 4); el.value = v }
-
     /* Field-group progression. Records only WHICH group was completed, never
        any value the visitor typed. This is what tells us where the checkout
        leaks — the single most actionable diagnostic on this page. */
     var _lastStep = 'loaded';
     var _stepsSeen = {};
-    var FIELD_GROUPS = [
-      { step: 'contact', selector: '#email-field' },
-      { step: 'shipping_name', selector: '.form-section:nth-of-type(2) input' },
-      { step: 'payment', selector: '#card-num' }
-    ];
 
     function markStep(step) {
       if (_stepsSeen[step]) return;
@@ -833,11 +915,40 @@
     document.querySelectorAll('.form-section')[1].querySelectorAll('input,select').forEach(function (el) {
       el.addEventListener('blur', function () { if (this.value) markStep('shipping'); });
     });
-    document.getElementById('card-num').addEventListener('focus', function () {
-      _lastStep = 'payment_reached';
-      markStep('payment_reached');
-      nml.track('checkout_payment_reached', CART_META);
-    }, { once: true });
+
+    /* Payment method selection. No card number, expiry or CVV is collected
+       anywhere — a realistic card form that can never charge reads as a
+       phishing pattern, and method selection is what real Indian checkouts
+       show first anyway. Which method they pick is itself useful signal. */
+    var _payMethod = null;
+    var _payLabel = null;
+
+    document.querySelectorAll('.pay-method').forEach(function (tile) {
+      tile.addEventListener('click', function () {
+        document.querySelectorAll('.pay-method').forEach(function (t) { t.classList.remove('selected'); });
+        tile.classList.add('selected');
+
+        _payMethod = tile.dataset.method;
+        _payLabel = tile.querySelector('.pm-name').textContent.trim();
+
+        var btn = document.getElementById('place-btn');
+        btn.disabled = false;
+        document.getElementById('btn-text').textContent = 'Place order';
+
+        markStep('payment_method_selected');
+        nml.track('payment_method_selected', Object.assign({
+          payment_method: _payMethod,
+          payment_method_label: _payLabel
+        }, CART_META));
+        nml.setPerson({ preferred_payment_method: _payMethod });
+
+        if (!_stepsSeen['payment_reached']) {
+          _stepsSeen['payment_reached'] = true;
+          _lastStep = 'payment_reached';
+          nml.track('checkout_payment_reached', CART_META);
+        }
+      });
+    });
 
     /* beforeunload is unreliable on mobile; pagehide fires in more cases.
        Guarded so an abandon is not double counted. */
@@ -868,6 +979,7 @@
 
     // THE FAKE DOOR: place order → show spinner → show error
     function placeOrder() {
+      if (!_payMethod) return;   // button is disabled until a method is picked
       const btn = document.getElementById('place-btn');
       const txt = document.getElementById('btn-text');
       const spin = document.getElementById('spinner');
@@ -881,12 +993,15 @@
          leading indicator of it. */
       window._paymentAttempted = true;
       nml.track('payment_attempted', Object.assign({
-        attempt_number: (window._attemptCount = (window._attemptCount || 0) + 1)
+        attempt_number: (window._attemptCount = (window._attemptCount || 0) + 1),
+        payment_method: _payMethod,
+        payment_method_label: _payLabel
       }, CART_META), 'payment_attempted');
       nml.setPerson({
         has_attempted_payment: true,
         intent_cart_value: CART_META.cart_value,
-        intent_sku_types: CART_META.sku_types
+        intent_sku_types: CART_META.sku_types,
+        intent_payment_method: _payMethod
       });
 
       setTimeout(() => {
@@ -896,7 +1011,7 @@
         const err = document.getElementById('pay-error');
         err.classList.add('show');
         err.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        nml.track('fake_door_shown', CART_META);
+        nml.track('fake_door_shown', Object.assign({ payment_method: _payMethod }, CART_META));
         const email = document.getElementById('email-field').value;
         if (email) document.getElementById('notify-email').value = email;
       }, 2800);
