@@ -8,6 +8,10 @@
   <script src="analytics.js?v=6"></script>
   <script src="interactions.js?v=3"></script>
   <style>
+/* persistent pre-launch label — the storefront must not read as operational */
+.prelaunch{background:#7a1f1f;color:#fff;font-size:12.5px;font-weight:600;text-align:center;padding:9px 18px;line-height:1.5}
+.prelaunch a{color:#f3d9a4;text-decoration:underline;text-underline-offset:2px}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --ink:#1a0e06;--cream:#f5ecd5;--paper:#fdf8ef;--deep:#2a1508;
@@ -151,7 +155,7 @@ nav a:hover{opacity:1}
 .reviews{background:var(--deep);color:#fff}
 .rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .rcard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:22px 20px}
-.rcard-stars{color:var(--gold);font-size:13px;letter-spacing:2px;margin-bottom:10px}
+.rcard-icon{font-size:22px;margin-bottom:10px}
 .rcard-text{font-size:14px;color:rgba(255,255,255,.72);line-height:1.75;margin-bottom:14px;font-style:italic}
 .rcard-handle{font-size:11px;color:rgba(255,255,255,.3);font-weight:600;letter-spacing:.3px}
 
@@ -203,21 +207,22 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
 </head>
 <body>
 
+<div class="prelaunch">Concept in testing — these are not made yet and nothing can be bought. <a href="terms.html">Why?</a></div>
 <!-- ticker -->
 <div class="ticker-wrap" aria-hidden="true">
   <div class="ticker">
     <div class="ticker-seg">
-      <span class="ti">🍫 <b>FREE SHIPPING</b> OVER ₹499</span><span class="ti">✦</span>
-      <span class="ti">📚 AS SEEN ON <b>BOOKTOK</b></span><span class="ti">✦</span>
-      <span class="ti">🇮🇳 MADE FRESH IN INDIA</span><span class="ti">✦</span>
-      <span class="ti">📦 SHIPS IN <b>3–5 DAYS</b></span><span class="ti">✦</span>
+      <span class="ti">🍫 <b>CONCEPT</b> IN TESTING</span><span class="ti">✦</span>
+      <span class="ti">📚 FOR THE <b>FERAL READER</b></span><span class="ti">✦</span>
+      <span class="ti">🇮🇳 TO BE MADE IN INDIA</span><span class="ti">✦</span>
+      <span class="ti">📦 <b>NOT SHIPPING YET</b> · JOIN THE LIST</span><span class="ti">✦</span>
       <span class="ti">💌 READ · SAVOUR · REPEAT</span><span class="ti">✦</span>
     </div>
     <div class="ticker-seg" aria-hidden="true">
-      <span class="ti">🍫 <b>FREE SHIPPING</b> OVER ₹499</span><span class="ti">✦</span>
-      <span class="ti">📚 AS SEEN ON <b>BOOKTOK</b></span><span class="ti">✦</span>
-      <span class="ti">🇮🇳 MADE FRESH IN INDIA</span><span class="ti">✦</span>
-      <span class="ti">📦 SHIPS IN <b>3–5 DAYS</b></span><span class="ti">✦</span>
+      <span class="ti">🍫 <b>CONCEPT</b> IN TESTING</span><span class="ti">✦</span>
+      <span class="ti">📚 FOR THE <b>FERAL READER</b></span><span class="ti">✦</span>
+      <span class="ti">🇮🇳 TO BE MADE IN INDIA</span><span class="ti">✦</span>
+      <span class="ti">📦 <b>NOT SHIPPING YET</b> · JOIN THE LIST</span><span class="ti">✦</span>
       <span class="ti">💌 READ · SAVOUR · REPEAT</span><span class="ti">✦</span>
     </div>
   </div>
@@ -258,11 +263,11 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
 <!-- trust strip -->
 <div class="trust-strip">
   <div class="trust-inner">
-    <div class="trust-item">⭐⭐⭐⭐⭐ <strong>4.9</strong> from 2,400+ readers</div>
-    <div class="trust-item">🍫 <strong>Food-safe</strong> edible ink</div>
-    <div class="trust-item">🇮🇳 <strong>Made</strong> fresh per order</div>
-    <div class="trust-item">📦 <strong>Ships</strong> in 3–5 days</div>
-    <div class="trust-item">🔒 <strong>Secure</strong> checkout</div>
+    <div class="trust-item">🧪 <strong>Pre-launch</strong> — nothing sold yet</div>
+    <div class="trust-item">🍫 <strong>Will use</strong> food-safe edible ink</div>
+    <div class="trust-item">🇮🇳 <strong>To be made</strong> fresh per order</div>
+    <div class="trust-item">📦 <strong>Shipping</strong> not live yet</div>
+    <div class="trust-item">✍️ <strong>Join</strong> the waitlist</div>
   </div>
 </div>
 
@@ -303,23 +308,20 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
 <!-- reviews -->
 <section class="section reviews" id="reviews">
   <div class="s-inner">
-    <div class="s-label" style="color:var(--gold)">what they're saying</div>
-    <div class="s-title" style="color:#fff;margin-bottom:28px">the internet approves.</div>
+    <div class="s-label" style="color:var(--gold)">no reviews yet</div>
+    <div class="s-title" style="color:#fff;margin-bottom:28px">nobody has eaten one.<br/>you could be first.</div>
     <div class="rgrid">
       <div class="rcard">
-        <div class="rcard-stars">★★★★★</div>
-        <p class="rcard-text">"bought 'my roman empire' for the book that destroyed me in 2022. ate it while rereading. still not over it. this chocolate gets it."</p>
-        <div class="rcard-handle">@perma.brainworm · BookTok · 18K followers</div>
+        <div class="rcard-icon">📋</div>
+        <p class="rcard-text">We haven't sold a single bookmark, so there is nothing here to quote at you. This page exists to find out whether the idea is worth making at all.</p>
       </div>
       <div class="rcard">
-        <div class="rcard-stars">★★★★★</div>
-        <p class="rcard-text">"'down bad for a fictional man' was sent to me by four different friends in one week. bought it for all of them. we're all fine."</p>
-        <div class="rcard-handle">@romantasy.rotting · Instagram · 11.2K followers</div>
+        <div class="rcard-icon">🧪</div>
+        <p class="rcard-text">Three flavours exist as finished designs. Three more are still just names. Which ones get produced depends on which ones people ask for.</p>
       </div>
       <div class="rcard">
-        <div class="rcard-stars">★★★★★</div>
-        <p class="rcard-text">"'the author is unwell (5 stars)' is the most accurate product name I have ever seen. ate it in 3 minutes. no further notes."</p>
-        <div class="rcard-handle">@booktok.certified.unhinged · BookTok · 7.4K followers</div>
+        <div class="rcard-icon">✍️</div>
+        <p class="rcard-text">Join the list and you'll be among the first to try them — and the first reviews on this page will be real ones, from people who actually ate the thing.</p>
       </div>
     </div>
   </div>
@@ -405,7 +407,8 @@ document.getElementById('hero-cards').innerHTML=IN_STOCK.map(id=>{const p=PRODUC
     </div>
     <div class="hcard-price">₹${p.price}</div>
   </a>`}).join('');
-document.getElementById('hero-cards-note').textContent=`${IN_STOCK.length} flavours ready now · ${COMING_SOON.length} more coming soon`;
+/* "ready now" would imply stock exists. These are finished designs, nothing more. */
+document.getElementById('hero-cards-note').textContent=`${IN_STOCK.length} designs finished · ${COMING_SOON.length} still just names`;
 
 /* The gift box is the higher-AOV SKU. It contains 2 bookmarks of each
    IN_STOCK flavour, so it can never promise a flavour we cannot make. */

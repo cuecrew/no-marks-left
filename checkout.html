@@ -11,6 +11,10 @@
   <script src="analytics.js?v=6"></script>
   <script src="interactions.js?v=3"></script>
   <style>
+/* persistent pre-launch label — the storefront must not read as operational */
+.prelaunch{background:#7a1f1f;color:#fff;font-size:12.5px;font-weight:600;text-align:center;padding:9px 18px;line-height:1.5}
+.prelaunch a{color:#f3d9a4;text-decoration:underline;text-underline-offset:2px}
+
     *,
     *::before,
     *::after {
@@ -671,10 +675,11 @@
 
 <body>
 
-  <header class="checkout-header">
+  <div class="prelaunch">Concept in testing — these are not made yet and nothing can be bought. <a href="terms.html">Why?</a></div>
+<header class="checkout-header">
     <div class="checkout-header-inner">
       <a href="index.html" class="logo">No <em>Marks</em> Left</a>
-      <div class="secure-tag">🔒 Secure checkout</div>
+      <div class="secure-tag">🧪 Concept in testing — no payment is taken</div>
     </div>
   </header>
 
@@ -708,43 +713,14 @@
       </div>
 
       <div class="form-section">
-        <div class="form-section-title">Shipping address</div>
+        <div class="form-section-title">Delivery area</div>
+        <p class="pay-intro">We are not shipping yet, so there is no address to give us. If you tell us
+          roughly where you are, we will know which cities to launch in first. Entirely optional.</p>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">First name</label><input class="form-input"
-              placeholder="Arjun" /></div>
-          <div class="form-group"><label class="form-label">Last name</label><input class="form-input"
-              placeholder="Sharma" /></div>
-        </div>
-        <div class="form-row full">
-          <div class="form-group"><label class="form-label">Address</label><input class="form-input"
-              placeholder="123 MG Road, Apt 4B" /></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">City</label><input class="form-input"
-              placeholder="Bangalore" /></div>
-          <div class="form-group"><label class="form-label">PIN code</label><input class="form-input"
-              placeholder="560001" maxlength="6" /></div>
-        </div>
-        <div class="form-row full">
-          <div class="form-group"><label class="form-label">State</label>
-            <select class="form-input">
-              <option value="">Select state…</option>
-              <option>Karnataka</option>
-              <option>Maharashtra</option>
-              <option>Delhi</option>
-              <option>Tamil Nadu</option>
-              <option>Telangana</option>
-              <option>Gujarat</option>
-              <option>Rajasthan</option>
-              <option>West Bengal</option>
-              <option>Kerala</option>
-              <option>Other</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row full">
-          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel"
-              placeholder="+91 98765 43210" /></div>
+          <div class="form-group"><label class="form-label">PIN code <span
+                style="font-weight:400;opacity:.6">(optional)</span></label>
+            <input class="form-input" id="pin-field" inputmode="numeric" placeholder="560001" maxlength="6"
+              autocomplete="off" /></div>
         </div>
       </div>
 
@@ -810,16 +786,16 @@
         <div class="pay-err-head">
           <div class="pay-err-icon">⚠️</div>
           <div>
-            <div class="pay-err-title">Payment didn't go through
-              <small>You have NOT been charged.</small>
+            <div class="pay-err-title">Payments aren't live yet
+              <small>You have NOT been charged. Nothing was sent to a bank.</small>
             </div>
           </div>
         </div>
-        <p class="pay-err-body">Our payment processor is experiencing high load right now — this happens sometimes when
-          we get a lot of orders at once. It's us, not you. Try again in a few minutes, or drop your email and we'll
-          notify you the moment it's sorted.</p>
+        <p class="pay-err-body">Here's the honest version: these bookmarks don't exist yet. I'm working out whether
+          enough people want them before making a batch, and you getting this far is the strongest signal there is.
+          Leave your email and you'll be among the first to get one when they're real.</p>
         <hr class="pay-err-divider" />
-        <div class="pay-err-cta-label">Notify me when payments are back</div>
+        <div class="pay-err-cta-label">Tell me when these are real</div>
         <div class="notify-row">
           <input class="notify-input" type="email" id="notify-email" placeholder="your@email.com" />
           <button class="notify-btn" onclick="submitNotify()">Notify me</button>
@@ -858,18 +834,24 @@
   <script>
     // order summary
     function getCart() { try { return JSON.parse(localStorage.getItem('nml_cart') || '[]') } catch { return [] } }
+    // Cart data comes from localStorage — escape anything going into innerHTML.
+    function esc(v) {
+      return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
     const cart = getCart();
-    const sub = cart.reduce((a, i) => a + i.price * i.qty, 0);
+    const sub = cart.reduce((a, i) => a + Number(i.price) * Number(i.qty), 0);
     const ship = sub >= 499 ? 0 : 80;
 
     document.getElementById('order-items').innerHTML = cart.length ? cart.map(i => `
   <div class="order-item">
-    <div class="oi-img ${i.cls}">${i.emoji}</div>
+    <div class="oi-img ${esc(i.cls)}">${esc(i.emoji)}</div>
     <div class="oi-info">
-      <div class="oi-name">${i.name}</div>
-      <div class="oi-variant">${i.size} × ${i.qty}</div>
+      <div class="oi-name">${esc(i.name)}</div>
+      <div class="oi-variant">${esc(i.size)} × ${Number(i.qty)}</div>
     </div>
-    <div class="oi-price">₹${i.price * i.qty}</div>
+    <div class="oi-price">₹${Number(i.price) * Number(i.qty)}</div>
   </div>`).join('') : '<div style="font-size:13px;color:rgba(26,14,6,.4);text-align:center;padding:20px 0">Your cart is empty.</div>';
 
     document.getElementById('sum-sub').textContent = '₹' + sub;
@@ -912,8 +894,12 @@
     document.getElementById('email-field').addEventListener('blur', function () {
       if (this.value) markStep('contact');
     });
-    document.querySelectorAll('.form-section')[1].querySelectorAll('input,select').forEach(function (el) {
-      el.addEventListener('blur', function () { if (this.value) markStep('shipping'); });
+    // Optional PIN — the only location signal we ask for, and never a full address.
+    document.getElementById('pin-field').addEventListener('blur', function () {
+      if (this.value) {
+        markStep('pin_entered');
+        nml.track('pin_entered', Object.assign({ pin_prefix: this.value.slice(0, 3) }, CART_META));
+      }
     });
 
     /* Payment method selection. No card number, expiry or CVV is collected

@@ -200,10 +200,11 @@
         // Exhaustive click coverage without hand-instrumenting each button.
         autocapture: true,
         rageclick: true,
-        /* Mask every input in session replays. Our privacy policy promises
-           that nothing typed into a field — card details included — is
-           visible in a recording, so this must stay true. */
-        session_recording: { maskAllInputs: true }
+        /* Session replay is OFF. It is the most invasive thing PostHog can do
+           and there is no consent banner here yet, so recording visitors —
+           including EU/UK traffic arriving from Reddit — is not defensible.
+           The funnel events already answer the question replay would. */
+        disable_session_recording: true
       });
 
       posthog.register({

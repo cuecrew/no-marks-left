@@ -8,6 +8,10 @@
   <script src="analytics.js?v=6"></script>
   <script src="interactions.js?v=3"></script>
   <style>
+/* persistent pre-launch label — the storefront must not read as operational */
+.prelaunch{background:#7a1f1f;color:#fff;font-size:12.5px;font-weight:600;text-align:center;padding:9px 18px;line-height:1.5}
+.prelaunch a{color:#f3d9a4;text-decoration:underline;text-underline-offset:2px}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --ink:#1a0e06;--cream:#f5ecd5;--paper:#fdf8ef;--deep:#2a1508;
@@ -118,6 +122,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
 </head>
 <body>
 
+<div class="prelaunch">Concept in testing — these are not made yet and nothing can be bought. <a href="terms.html">Why?</a></div>
 <header>
   <div class="h-inner">
     <a href="index.html" class="logo">No <em>Marks</em> Left</a>
@@ -204,33 +209,33 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
   <div class="craft-inner">
     <div class="craft-label">the craft</div>
     <h2 class="craft-h2">made with obsessive<br/><em>attention.</em></h2>
-    <p class="craft-intro">We're a small team of readers who also care deeply about chocolate. Every batch is made fresh per order, in a clean food-grade kitchen, using ingredients we'd give to people we actually like.</p>
+    <p class="craft-intro">I'm a reader who also cares deeply about chocolate. <strong>None of this is being made yet</strong> — what follows is how it is intended to work, once there is enough interest to justify a first batch.</p>
 
     <div class="trust-grid">
       <div class="trust-card">
         <div class="trust-icon">🍫</div>
-        <div class="trust-title">Real couverture chocolate</div>
-        <div class="trust-desc">Not compound. Not "chocolate-flavoured". Actual couverture — 70% single-origin dark, ethically-sourced milk, and Belgian white. You'll taste the difference.</div>
+        <div class="trust-title">Will use real couverture chocolate</div>
+        <div class="trust-desc">The intention is couverture rather than compound — dark, milk and white. Exact sourcing gets decided when a manufacturer is chosen.</div>
       </div>
       <div class="trust-card">
         <div class="trust-icon">🎨</div>
-        <div class="trust-title">Food-safe edible ink</div>
-        <div class="trust-desc">Designs are printed with food-grade edible ink on edible wafer paper — the same technology professional patisseries use. Every detail is safe to eat.</div>
+        <div class="trust-title">Will use food-safe edible ink</div>
+        <div class="trust-desc">The plan is food-grade edible ink on edible wafer paper — the same technology patisseries already use daily. Nothing has been produced or tested yet.</div>
       </div>
       <div class="trust-card">
         <div class="trust-icon">📦</div>
-        <div class="trust-title">Made fresh per order</div>
-        <div class="trust-desc">No sitting in warehouses. Every order is made after you place it — ships in 3–5 days in temperature-controlled packaging so it reaches you perfect.</div>
+        <div class="trust-title">To be made fresh per order</div>
+        <div class="trust-desc">The intent is to make each order after it is placed rather than hold stock. Shipping is not set up yet, and Indian summer temperatures are the hardest unsolved problem.</div>
       </div>
       <div class="trust-card">
         <div class="trust-icon">🌿</div>
-        <div class="trust-title">No artificial preservatives</div>
-        <div class="trust-desc">We don't add shelf-extenders. Our bookmarks have a natural 30-day shelf life. We figure you'll finish the book well before that.</div>
+        <div class="trust-title">No artificial preservatives planned</div>
+        <div class="trust-desc">The aim is no shelf-extenders, which would mean a short shelf life. Actual figures can only come from a real batch.</div>
       </div>
       <div class="trust-card" style="grid-column:1/-1">
         <div class="trust-icon">📄</div>
-        <div class="trust-title">Zero marks on your pages. Guaranteed.</div>
-        <div class="trust-desc">Our bookmarks are finished with a sealed food-grade coating that prevents any oil or cocoa butter transfer onto paper. Sit it between your pages for 30 days — they'll come out clean. Your book is safe. That's a promise, and also the whole point of our name.</div>
+        <div class="trust-title">The hard part: leaving no marks</div>
+        <div class="trust-desc">This is the genuine engineering problem, not a solved feature. Chocolate is roughly a third fat and paper is porous, so cocoa butter wants to wick into the page. A sealed food-grade coating is the likely answer, and printed wafer paper — which is essentially fat-free — may be a better one. Until a batch has been tested against real books, treat this as the thing being worked on rather than a guarantee.</div>
       </div>
     </div>
 
