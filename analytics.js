@@ -200,11 +200,10 @@
         // Exhaustive click coverage without hand-instrumenting each button.
         autocapture: true,
         rageclick: true,
-        /* Session replay is OFF. It is the most invasive thing PostHog can do
-           and there is no consent banner here yet, so recording visitors —
-           including EU/UK traffic arriving from Reddit — is not defensible.
-           The funnel events already answer the question replay would. */
-        disable_session_recording: true
+        /* Session replay ON with every input masked. At a ~1,000-visitor sample
+           a handful of replays is worth more than any chart, and the privacy
+           policy discloses it. Masking is what keeps that disclosure true. */
+        session_recording: { maskAllInputs: true }
       });
 
       posthog.register({

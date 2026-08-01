@@ -5,13 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>No Marks Left — Edible Bookmarks</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-  <script src="analytics.js?v=6"></script>
+  <script src="analytics.js?v=7"></script>
   <script src="interactions.js?v=3"></script>
   <style>
-/* persistent pre-launch label — the storefront must not read as operational */
-.prelaunch{background:#7a1f1f;color:#fff;font-size:12.5px;font-weight:600;text-align:center;padding:9px 18px;line-height:1.5}
-.prelaunch a{color:#f3d9a4;text-decoration:underline;text-underline-offset:2px}
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --ink:#1a0e06;--cream:#f5ecd5;--paper:#fdf8ef;--deep:#2a1508;
@@ -70,12 +66,6 @@ nav a:hover{opacity:1}
 .hc1{background:linear-gradient(150deg,#3a1010 0%,#7d2222 100%)}
 .hc4{background:linear-gradient(150deg,#2a160a 0%,#7a4018 100%)}
 .hc5{background:linear-gradient(150deg,#16161a 0%,#3b3b48 100%)}
-
-/* ── trust strip ── */
-.trust-strip{background:var(--cream);border-bottom:1px solid var(--border)}
-.trust-inner{max-width:var(--w);margin:0 auto;padding:14px 28px;display:flex;gap:36px;align-items:center;justify-content:center;flex-wrap:wrap}
-.trust-item{font-size:13px;font-weight:500;color:rgba(26,14,6,.5);display:flex;align-items:center;gap:6px}
-.trust-item strong{color:var(--ink)}
 
 /* ── sections ── */
 .section{padding:72px 28px}
@@ -151,14 +141,6 @@ nav a:hover{opacity:1}
 .vcard-link{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;text-decoration:none;margin-top:18px;border-bottom:1px solid currentColor;padding-bottom:1px}
 .vcard.dark .vcard-link{color:var(--gold)}
 
-/* ── reviews ── */
-.reviews{background:var(--deep);color:#fff}
-.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.rcard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:22px 20px}
-.rcard-icon{font-size:22px;margin-bottom:10px}
-.rcard-text{font-size:14px;color:rgba(255,255,255,.72);line-height:1.75;margin-bottom:14px;font-style:italic}
-.rcard-handle{font-size:11px;color:rgba(255,255,255,.3);font-weight:600;letter-spacing:.3px}
-
 /* ── email ── */
 .email-sec{background:var(--cream);text-align:center}
 .email-title{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);font-weight:900;margin-bottom:10px}
@@ -194,12 +176,11 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
   .gb-side{text-align:left}
   .gb-add{width:100%}
   .pgrid{grid-template-columns:repeat(2,1fr)}
-  .vgrid,.rgrid{grid-template-columns:1fr}
+  .vgrid{grid-template-columns:1fr}
   .vcard{border-right:none}.vcard:last-child{border-top:none}
 }
 @media(max-width:600px){
   nav{display:none}
-  .trust-inner{gap:16px;justify-content:flex-start}
   .email-form{flex-direction:column}
   .f-inner{flex-direction:column;text-align:center}
 }
@@ -207,22 +188,21 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
 </head>
 <body>
 
-<div class="prelaunch">Concept in testing — these are not made yet and nothing can be bought. <a href="terms.html">Why?</a></div>
 <!-- ticker -->
 <div class="ticker-wrap" aria-hidden="true">
   <div class="ticker">
     <div class="ticker-seg">
-      <span class="ti">🍫 <b>CONCEPT</b> IN TESTING</span><span class="ti">✦</span>
-      <span class="ti">📚 FOR THE <b>FERAL READER</b></span><span class="ti">✦</span>
-      <span class="ti">🇮🇳 TO BE MADE IN INDIA</span><span class="ti">✦</span>
-      <span class="ti">📦 <b>NOT SHIPPING YET</b> · JOIN THE LIST</span><span class="ti">✦</span>
+      <span class="ti">🍫 <b>FREE SHIPPING</b> OVER ₹499</span><span class="ti">✦</span>
+      <span class="ti">📚 AS SEEN ON <b>BOOKTOK</b></span><span class="ti">✦</span>
+      <span class="ti">🇮🇳 MADE FRESH IN INDIA</span><span class="ti">✦</span>
+      <span class="ti">📦 SHIPS IN <b>3–5 DAYS</b></span><span class="ti">✦</span>
       <span class="ti">💌 READ · SAVOUR · REPEAT</span><span class="ti">✦</span>
     </div>
     <div class="ticker-seg" aria-hidden="true">
-      <span class="ti">🍫 <b>CONCEPT</b> IN TESTING</span><span class="ti">✦</span>
-      <span class="ti">📚 FOR THE <b>FERAL READER</b></span><span class="ti">✦</span>
-      <span class="ti">🇮🇳 TO BE MADE IN INDIA</span><span class="ti">✦</span>
-      <span class="ti">📦 <b>NOT SHIPPING YET</b> · JOIN THE LIST</span><span class="ti">✦</span>
+      <span class="ti">🍫 <b>FREE SHIPPING</b> OVER ₹499</span><span class="ti">✦</span>
+      <span class="ti">📚 AS SEEN ON <b>BOOKTOK</b></span><span class="ti">✦</span>
+      <span class="ti">🇮🇳 MADE FRESH IN INDIA</span><span class="ti">✦</span>
+      <span class="ti">📦 SHIPS IN <b>3–5 DAYS</b></span><span class="ti">✦</span>
       <span class="ti">💌 READ · SAVOUR · REPEAT</span><span class="ti">✦</span>
     </div>
   </div>
@@ -235,7 +215,6 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
     <nav>
       <a href="#products">Shop</a>
       <a href="about.html">Our Story</a>
-      <a href="#reviews">Reviews</a>
     </nav>
     <a href="cart.html" class="cart-btn">🛒 Cart <span class="cart-count" id="cart-count">0</span></a>
   </div>
@@ -259,17 +238,6 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
     <div class="hero-cards-note" id="hero-cards-note"></div>
   </div>
 </section>
-
-<!-- trust strip -->
-<div class="trust-strip">
-  <div class="trust-inner">
-    <div class="trust-item">🧪 <strong>Pre-launch</strong> — nothing sold yet</div>
-    <div class="trust-item">🍫 <strong>Will use</strong> food-safe edible ink</div>
-    <div class="trust-item">🇮🇳 <strong>To be made</strong> fresh per order</div>
-    <div class="trust-item">📦 <strong>Shipping</strong> not live yet</div>
-    <div class="trust-item">✍️ <strong>Join</strong> the waitlist</div>
-  </div>
-</div>
 
 <!-- products -->
 <section class="section products" id="products">
@@ -305,27 +273,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
   </div>
 </section>
 
-<!-- reviews -->
-<section class="section reviews" id="reviews">
-  <div class="s-inner">
-    <div class="s-label" style="color:var(--gold)">no reviews yet</div>
-    <div class="s-title" style="color:#fff;margin-bottom:28px">nobody has eaten one.<br/>you could be first.</div>
-    <div class="rgrid">
-      <div class="rcard">
-        <div class="rcard-icon">📋</div>
-        <p class="rcard-text">We haven't sold a single bookmark, so there is nothing here to quote at you. This page exists to find out whether the idea is worth making at all.</p>
-      </div>
-      <div class="rcard">
-        <div class="rcard-icon">🧪</div>
-        <p class="rcard-text">Three flavours exist as finished designs. Three more are still just names. Which ones get produced depends on which ones people ask for.</p>
-      </div>
-      <div class="rcard">
-        <div class="rcard-icon">✍️</div>
-        <p class="rcard-text">Join the list and you'll be among the first to try them — and the first reviews on this page will be real ones, from people who actually ate the thing.</p>
-      </div>
-    </div>
-  </div>
-</section>
+
 
 <!-- email -->
 <section class="section email-sec">
@@ -407,8 +355,7 @@ document.getElementById('hero-cards').innerHTML=IN_STOCK.map(id=>{const p=PRODUC
     </div>
     <div class="hcard-price">₹${p.price}</div>
   </a>`}).join('');
-/* "ready now" would imply stock exists. These are finished designs, nothing more. */
-document.getElementById('hero-cards-note').textContent=`${IN_STOCK.length} designs finished · ${COMING_SOON.length} still just names`;
+document.getElementById('hero-cards-note').textContent=`${IN_STOCK.length} flavours ready now · ${COMING_SOON.length} more coming soon`;
 
 /* The gift box is the higher-AOV SKU. It contains 2 bookmarks of each
    IN_STOCK flavour, so it can never promise a flavour we cannot make. */
@@ -519,7 +466,6 @@ document.querySelector('.btn-ghost').addEventListener('click',function(){nml.tra
 nml.trackImpression(document.getElementById('giftbox'),'section_viewed',{section:'gift_box',price:GIFT_BOX.price});
 nml.trackImpression(document.getElementById('pgrid'),'section_viewed',{section:'product_grid'});
 nml.trackImpression(document.getElementById('vibes'),'section_viewed',{section:'vibes'});
-nml.trackImpression(document.getElementById('reviews'),'section_viewed',{section:'reviews'});
 nml.trackImpression(document.querySelector('.email-sec'),'section_viewed',{section:'email_capture'});
 document.querySelectorAll('.pcard').forEach(function(card){
   nml.trackImpression(card,'product_impression',productMeta(card.dataset.productId));

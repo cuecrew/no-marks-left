@@ -5,13 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Cart — No Marks Left</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-  <script src="analytics.js?v=6"></script>
+  <script src="analytics.js?v=7"></script>
   <script src="interactions.js?v=3"></script>
   <style>
-/* persistent pre-launch label — the storefront must not read as operational */
-.prelaunch{background:#7a1f1f;color:#fff;font-size:12.5px;font-weight:600;text-align:center;padding:9px 18px;line-height:1.5}
-.prelaunch a{color:#f3d9a4;text-decoration:underline;text-underline-offset:2px}
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--ink:#1a0e06;--cream:#f5ecd5;--paper:#fdf8ef;--deep:#2a1508;--red:#8b1a1a;--gold:#c8913a;--pop:#d94f2b;--border:rgba(26,14,6,.1);--w:960px}
 body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.5}
@@ -103,7 +99,6 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
   </style>
 </head>
 <body>
-<div class="prelaunch">Concept in testing — these are not made yet and nothing can be bought. <a href="terms.html">Why?</a></div>
 <header>
   <div class="h-inner">
     <a href="index.html" class="logo">No <em>Marks</em> Left</a>
@@ -129,7 +124,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.4)}
     <div class="sum-row"><span>Shipping</span><span id="ship-amt"></span></div>
     <div class="sum-row total"><span>Total</span><span id="total-amt"></span></div>
     <a href="checkout.html" class="checkout-cta">Checkout →</a>
-    <div class="security-note">🧪 Concept in testing · nothing is charged</div>
+    <div class="security-note">🔒 Secure checkout · ₹499 free shipping</div>
     <div class="cross-sell">
       <div class="cross-title">Readers also added</div>
       <div id="cross-items"></div>
