@@ -2,3 +2,6 @@
 .vercel
 node_modules
 *.log
+
+# local handover notes — contains GTM strategy, keep out of the public repo
+HANDOVER.md
